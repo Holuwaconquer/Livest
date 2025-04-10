@@ -37,11 +37,11 @@ p{
     font-size: 16px;
     transform: none;
     visibility: visible;
-    position: relative;
-    /* display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 3em; */
+    position: sticky;
+    top: 0;
+    left: 0;
+    transition: all 0.3s ease;
+    z-index: 10000;
 }
 .sidenav.collapsed{
     width: 80px;
@@ -98,7 +98,37 @@ p{
     border-radius: 4px;
     border-radius: 4px;
 }
-.mainPage{
+.mainPageContainer{
     flex-grow: 1;
     padding: 20px;
+    width: 100%;
+}
+.topNav{
+    position: fixed;
+    top: 0;
+    right: 0;
+    /* flex-grow: 1; */
+    width: calc(100%);
+    z-index: 1;
+}
+.mainPage{
+    position: relative;
+    margin-top: 7%;
+}
+#dropDown p{
+    margin: 0;
+    padding: 10px 15px;
+}
+#dropDown a{
+    text-decoration: none;
+    color: var(--dark-color);
+}
+#dropDown p:hover{
+    background-color: #71be4763;
+}
+.show{
+    display: block !important;
+}
+.sidenavIcon{
+    margin-right: 10px;
 }

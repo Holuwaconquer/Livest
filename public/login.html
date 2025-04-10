@@ -182,7 +182,7 @@
         signInWithEmailAndPassword(auth, userEmail, userPassword)
         .then((userCredential)=>{
           console.log(userCredential);
-          location.href= "./client/clientdashboard.html"
+          location.href= "index.html"
           
         }).catch((err)=>{
           if (err.code === "auth/invalid-credential") {

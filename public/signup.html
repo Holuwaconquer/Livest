@@ -212,7 +212,6 @@
       onAuthStateChanged(auth, (user) => {
         if (user) {
             // User is signed in
-            
             loggedCheck.innerHTML = `<img style="width: 50px; height: 50px; border-radius: 50%;" src="${user.photoURL}">`
             console.log("User is signed in:", user);
             location.href='index.html'
@@ -295,22 +294,18 @@
                     const user = userCredential.user;
                     const userRef = ref(database, `/user/${user.uid}`)
                     console.log(user);
-                    
-                    let userArray = []
-                    userArray.push(userDetails)
-                    set(userRef, userArray)
+                    set(userRef, userDetails)
                     .then(()=>{
-                      signOut(auth).then(() => {
-                        // Sign-out successful.
-                      }).catch((error) => {
-                        console.log(error);
-                        
-                      });
-                      window.location.href = 'login.html'
+                      alert('info saved')
                     }).catch((err)=>{
-                      console.log(err);
+                      console.log('info not save',err);
                     })
-                      
+                    signOut(auth).then(() => {
+                      // Sign-out successful.
+                    }).catch((error) => {
+                      // An error happened.
+                    });
+                    location.href = "login.html"
                   })
                   .catch((error) => {
                     const errorCode = error.code;

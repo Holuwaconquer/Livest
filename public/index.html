@@ -15,7 +15,7 @@
   
   <style>
     .showDrop{
-      display: block;
+      display: block !important;
     }
   </style>
 </head>
@@ -26,7 +26,7 @@
       </video>
     <div class="top-section">
       <div class="left-side">
-        <h2 class="logo">livest</h2>
+        <h2 class="logo" style=":hover>cursor: pointer;">livest</h2>
       </div>
       <div class="center-side">
         <a href="">Home</a>
@@ -193,18 +193,29 @@
               </div>
             </div>`
             div.innerHTML=`
-            <div class="rounded-2 shadow p-3" style="display: none; position: absolute; top: 60px; right: 0; background: white; width: 200px; height: 200px">
-                <p>Hello <strong> ${user.displayName}</strong> </p>
-                <button>Dashboard</button>
-                <p style="cursor: pointer">Log out</p>
+            <div class="shadow py-2" style="position: absolute; border-radius: 4px; top: 75px; right: 0; background: white;">
+                <p class="py-3 px-4">Hello <strong> ${user.displayName}</strong> </p>
+                <button onclick="location.href='./client/clientdashboard.html'" class="py-3 px-4" style="border: none; outline: none; border-radius: 4px; background-color: transparent; color: black; ">Dashboard</button>
+                <p class="py-3 px-4" onclick="
+                  signOut(auth).then(() => {
+                    // Sign-out successful.
+                  }).catch((error) => {
+                    console.log(error);
+                  });
+                " style="cursor: pointer">Log out</p>
               </div>
             `
             loggedCheck.appendChild(div)
-            loggedCheck.addEventListener('mouseenter', ()=>{
-              // div.classList.toggle('showDrop')
-              div.style.display = "block"
+            div.style.display= "none";
+            loggedCheck.addEventListener('click', ()=>{
+              div.style.display = div.style.display === 'block' ? 'none' : 'block';
               
             })
+            document.addEventListener('click', function(e) {
+              if (!loggedCheck.contains(e.target) && !div.contains(e.target)) {
+                div.style.display = 'none';
+              }
+            });
           console.log("User is signed in:", user);
       } else {
           // No user is signed in
@@ -214,7 +225,7 @@
           loggedCheck.lastChild.classList.add('sign')
       }
     });
-    const logOut = ()=>{
+    const logOut = () =>{
       alert('user is logged out')
         signOut(auth).then(() => {
           // Sign-out successful.
@@ -230,9 +241,7 @@
           console.log(error);
       });
     })
-    // let dropDownParent = document.getElementById('dropDownParent')
     let dropDownBox = document.getElementById('dropDownBox')
-      // dropDownBox.classList.toggle('showDrop')
   </script>
 </body>
 </html>

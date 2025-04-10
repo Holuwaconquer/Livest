@@ -19,21 +19,58 @@
         <nav id="sidenav" class="sidenav">
             <button class="toggle-btn"><i class="fa-solid fa-bars"></i></button>
             <ul class="menu">
-                <li><a data-page="./dashboardpage/dashboard.html" href=""><span class="sidenavIcon"><i class="fa-solid fa-table-columns"></i></span><span class="sidenavText">Dashboard</span></a></li>
-                <li><a data-page="./dashboardpage/posts.html" href=""><span class="sidenavIcon"><i class="fa-solid fa-house"></i></span><span class="sidenavText">Posts</span></a></li>
-                <li><a data-page="./dashboardpage/order.html" href=""><span class="sidenavIcon"><i class="fa-solid fa-table-columns"></i></span><span class="sidenavText">Order</span></a></li>
-                <li><a data-page="./dashboardpage/message.html" href=""><span class="sidenavIcon"><i class="fa-solid fa-envelope"></i></span><span class="sidenavText">Message</span></a></li>
-                <li><a data-page="./dashboardpage/profile.html" href=""><span class="sidenavIcon"><i class="fa-solid fa-user-tie"></i></span><span class="sidenavText">Profile</span></a></li>
-                <li><a data-page="./dashboardpage/notification.html" href=""><span class="sidenavIcon"><i class="fa-solid fa-gear"></i></span><span class="sidenavText">Notification</span></a></li>
-                <li><a data-page="./dashboardpage/settings.html" href=""><span class="sidenavIcon"><i class="fa-solid fa-bell"></i></span><span class="sidenavText">Settings</span></a></li>
-                <li onclick="logOut()"><span class="sidenavIcon"><i class="fa-solid fa-right-from-bracket"></i></span><span class="sidenavText" >Log Out</span></li>
+                <li><a class="menuLink" data-page="./dashboardpage/dashboard.html" href=""><span class="sidenavIcon"><i class="fa-solid fa-table-columns"></i></span><span class="sidenavText">Dashboard</span></a></li>
+                <li><a class="menuLink" data-page="./dashboardpage/posts.html" href=""><span class="sidenavIcon"><i class="fa-solid fa-house"></i></span><span class="sidenavText">Posts</span></a></li>
+                <li><a class="menuLink" data-page="./dashboardpage/order.html" href=""><span class="sidenavIcon"><i class="fa-solid fa-table-columns"></i></span><span class="sidenavText">Order</span></a></li>
+                <li><a class="menuLink" data-page="./dashboardpage/message.html" href=""><span class="sidenavIcon"><i class="fa-solid fa-envelope"></i></span><span class="sidenavText">Message</span></a></li>
+                <li><a class="menuLink" data-page="./dashboardpage/profile.html" href=""><span class="sidenavIcon"><i class="fa-solid fa-user-tie"></i></span><span class="sidenavText">Profile</span></a></li>
+                <li><a class="menuLink" data-page="./dashboardpage/notification.html" href=""><span class="sidenavIcon"><i class="fa-solid fa-bell"></i></span><span class="sidenavText">Notification</span></a></li>
+                <li><a class="menuLink" data-page="./dashboardpage/settings.html" href=""><span class="sidenavIcon"><i class="fa-solid fa-gear"></i></span><span class="sidenavText">Settings</span></a></li>
+                <li id="logOutUser"><span class="sidenavIcon"><i class="fa-solid fa-right-from-bracket"></i></span><span class="sidenavText" >Log Out</span></li>
             </ul>
         </nav>
 
-
-        <main id="mainPage" class="mainPage bg-light">
-            <!-- <i class="fa-solid fa-user"></i> -->
-        </main>
+        <div class="mainPageContainer p-0">
+            <div class="position-relative w-100">
+                <div class="topNav py-2 bg-white shadow text-dark">
+                    <div class="d-flex gap-4 w-100 justify-content-end align-items-center">
+                        <!-- for message icon -->
+                         <div>
+                            <div class="rounded border py-2 px-3">
+                                <i style="cursor: pointer; color: #70be47;" class="fs-5 fa-solid fa-envelope"></i>
+                            </div>
+                         </div>
+                        <!-- for notification icon -->
+                         <div>
+                            <div class="rounded border py-2 px-3">
+                                <i style="cursor: pointer; color: #70be47;" class="fs-5 fa-solid fa-bell"></i>
+                            </div>
+                         </div>
+                        <!-- for user profile icon and name -->
+                        <div style="margin-right: 30px;" class="d-flex align-items-center gap-2" id="">
+                            <div style="position: relative; width: 40px; height: 40px; border-radius: 6px; background-color: blue;">
+                                <div id="dropDownParent" style="width: 100%; cursor: pointer; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                                    <img width="100%" style="object-fit: contain;" src='${userPhoto}'>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-column gap-0" style="line-height: 0;">
+                                <h6>Username</h6>
+                                <small style="font-size: 12px; font-weight: 400;">verified user</small>
+                            </div>
+                            <i id="showDrop" style="padding: 3px; font-size: 1em; color: #70be47; cursor: pointer;" class="fa-solid fa-angle-down"></i>
+                        </div>
+                        <div id="dropDown" class="shadow py-2" style="display: none; position: absolute; border-radius: 4px; top: 55px; right: 10px; background: white;">
+                            <p><a class="menuLink" data-page="./dashboardpage/profile.html" href=""><span class="sidenavIcon"><i class="fa-solid fa-user-tie"></i></span>My Profile</a></p>
+                            <p><a href="../index.html">Go to Homepage</a></p>
+                            <p style="cursor: pointer"><span class="sidenavIcon"><i class="fa-solid fa-right-from-bracket"></i></span>Log out</p>
+                          </div>
+                    </div>
+                </div>
+                <main id="mainPage" class="mainPage bg-white">
+                    <!-- <i class="fa-solid fa-user"></i> -->
+                </main>
+            </div>
+        </div>
     </div>
 
 
@@ -64,15 +101,14 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const logOut = () =>{
-            event.preventDefault()
+        document.getElementById('logOutUser').addEventListener('click', ()=>{
             signOut(auth).then(() => {
-            // Sign-out successful.
-            location.href = "../login.html"
-            }).catch((error) => {
-                console.log(error);
-            });
-        }
+                alert('Sign-out successful.')
+                location.href = "../login.html"
+                }).catch((error) => {
+                    console.log(error);
+                });
+        })
     </script>
     <script src="./client.js"></script>
 </body>

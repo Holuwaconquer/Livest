@@ -2,7 +2,6 @@ let toggleBtn = document.querySelector('.toggle-btn')
 let sidenav = document.getElementById('sidenav')
 toggleBtn.addEventListener('click', ()=>{
     sidenav.classList.toggle('collapsed')
-    // alert('working')
 
     let menuLink = document.querySelectorAll('.menu li a');
     menuLink.forEach(linkItem =>{
@@ -79,7 +78,7 @@ toggleBtn.addEventListener('click', ()=>{
             // Log out
             menuLink[8].addEventListener('mouseover', ()=>{
                 tooltips.innerHTML =`<p style="Background-color: #333; font-size: 14px; color: white; padding:8px 15px;
-                 position: absolute; top: 88%; left: 85px; z-index: 1; ">Log Out</p>`
+                 position: absolute; top: 80%; left: 85px; z-index: 1; ">Log Out</p>`
             })
             menuLink[8].addEventListener('mouseout', ()=>{
                 tooltips.innerHTML=""
@@ -108,7 +107,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
             })
         }, 1000);
     }
-    document.querySelectorAll('.menu a').forEach(link =>{
+    document.querySelectorAll('.menuLink').forEach(link =>{
         link.addEventListener('click', function(e){
             e.preventDefault();
             document.querySelectorAll('.menu li').forEach(item => item.classList.remove('active'));
@@ -118,3 +117,19 @@ document.addEventListener('DOMContentLoaded', ()=>{
     });
     // loadPage('../admin/dashboard-pages/admindashboard.html')
 })
+
+let showDrop = document.getElementById('showDrop')
+let dropDown = document.getElementById('dropDown')
+showDrop.addEventListener('click', ()=>{
+    dropDown.classList.toggle('show')
+})
+document.addEventListener('click', (e)=>{
+    if(!showDrop.contains(e.target) && !dropDown.contains(e.target)){
+        dropDown.classList.remove('show')
+    }
+})
+// document.addEventListener('click', function(e) {
+//     if (!loggedCheck.contains(e.target) && !div.contains(e.target)) {
+//       div.style.display = 'none';
+//     }
+// });
