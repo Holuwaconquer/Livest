@@ -26,7 +26,7 @@
       </video>
     <div class="top-section">
       <div class="left-side">
-        <h2 class="logo" style=":hover>cursor: pointer;">livest</h2>
+        <h2 class="logo">livest</h2>
       </div>
       <div class="center-side">
         <a href="">Home</a>
@@ -185,6 +185,9 @@
       if (user) {
         const userPhoto = user.photoURL || userPic
           // User is signed in
+          const [first, last] = user.displayName.split(' ');
+          console.log(user.displayName);
+          
             loggedCheck.innerHTML=`
             <div style="position: relative; width: 50px; height: 50px; border-radius: 50%; background-color: blue;">
               <div id="dropDownParent" style="width: 100%; cursor: pointer; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column;">
@@ -194,7 +197,7 @@
             </div>`
             div.innerHTML=`
             <div class="shadow py-2" style="position: absolute; border-radius: 4px; top: 75px; right: 0; background: white;">
-                <p class="py-3 px-4">Hello <strong> ${user.displayName}</strong> </p>
+                <p class="py-3 px-4">Hello <strong>${first}</strong> </p>
                 <button onclick="location.href='./client/clientdashboard.html'" class="py-3 px-4" style="border: none; outline: none; border-radius: 4px; background-color: transparent; color: black; ">Dashboard</button>
                 <p class="py-3 px-4" onclick="
                   signOut(auth).then(() => {

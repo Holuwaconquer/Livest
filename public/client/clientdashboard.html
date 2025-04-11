@@ -54,20 +54,19 @@
                                 </div>
                             </div>
                             <div class="d-flex flex-column gap-0" style="line-height: 0;">
-                                <h6>Username</h6>
-                                <small style="font-size: 12px; font-weight: 400;">verified user</small>
+                                <h6 id="currentUserName"></h6>
+                                <small id="verifiedUser" style="font-size: 12px; font-weight: 400;"></small>
                             </div>
                             <i id="showDrop" style="padding: 3px; font-size: 1em; color: #70be47; cursor: pointer;" class="fa-solid fa-angle-down"></i>
                         </div>
                         <div id="dropDown" class="shadow py-2" style="display: none; position: absolute; border-radius: 4px; top: 55px; right: 10px; background: white;">
                             <p><a class="menuLink" data-page="./dashboardpage/profile.html" href=""><span class="sidenavIcon"><i class="fa-solid fa-user-tie"></i></span>My Profile</a></p>
                             <p><a href="../index.html">Go to Homepage</a></p>
-                            <p style="cursor: pointer"><span class="sidenavIcon"><i class="fa-solid fa-right-from-bracket"></i></span>Log out</p>
+                            <p id="logUserOut" style="cursor: pointer"><span class="sidenavIcon"><i class="fa-solid fa-right-from-bracket"></i></span>Log out</p>
                           </div>
                     </div>
                 </div>
                 <main id="mainPage" class="mainPage bg-white">
-                    <!-- <i class="fa-solid fa-user"></i> -->
                 </main>
             </div>
         </div>
@@ -101,14 +100,45 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const database = getDatabase()
+    //     let surname = document.getElementById('surname')
+    //   let firstname = document.getElementById('firstname')
+    //   let middlename = document.getElementById('middlename')
+    //   let email = document.getElementById('email')
+        onAuthStateChanged(auth, (user) =>{
+            // console.log(user);
+            const [first, last] = user.displayName.split(' ');
+            // surname.value = last
+            const uid = user.uid
+            let currentUserName = document.getElementById('currentUserName')
+            let verifiedUser = document.getElementById('verifiedUser')
+            currentUserName.innerText = user.displayName
+            verifiedUser.innerText = user.emailVerified ? 'Verified' : 'Not Verified';
+            
+            // const userRef = ref(database, `/user/${user.uid}`)
+            // console.log(userRef);
+            // onValue(userRef, (snapshot)=>{
+            //     const data = snapshot.val()
+            //     // console.log(data);
+                
+            // })
+            // console.log(uid);
+        })
         document.getElementById('logOutUser').addEventListener('click', ()=>{
-            signOut(auth).then(() => {
-                alert('Sign-out successful.')
-                location.href = "../login.html"
+            logOut()
+        })
+        document.getElementById('logUserOut').addEventListener('click', ()=>{
+            logOut()
+        })
+        const logOut = ()=>{
+            signOut(auth)
+                .then(() => {
+                    alert('Sign-out successful.')
+                    location.href = "../login.html"
                 }).catch((error) => {
                     console.log(error);
                 });
-        })
+        }
     </script>
     <script src="./client.js"></script>
 </body>

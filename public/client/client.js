@@ -101,6 +101,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
             .then(data =>{
                 mainPage.innerHTML= data;
                 localStorage.setItem("lastPage", page);
+                runInlineScripts(mainPage);
             })
             .catch(error =>{
                 console.error("Error loading page:", error);   
@@ -117,6 +118,25 @@ document.addEventListener('DOMContentLoaded', ()=>{
     });
     // loadPage('../admin/dashboard-pages/admindashboard.html')
 })
+function runInlineScripts(container) {
+    const scripts = container.querySelectorAll('script');
+    scripts.forEach(oldScript => {
+        const newScript = document.createElement('script');
+
+        // Copy attributes like type="module", src, etc.
+        [...oldScript.attributes].forEach(attr => {
+            newScript.setAttribute(attr.name, attr.value);
+        });
+
+        if (oldScript.src) {
+            newScript.src = oldScript.src;
+        } else {
+            newScript.textContent = oldScript.textContent;
+        }
+
+        oldScript.parentNode.replaceChild(newScript, oldScript);
+    });
+}
 
 let showDrop = document.getElementById('showDrop')
 let dropDown = document.getElementById('dropDown')
@@ -128,8 +148,5 @@ document.addEventListener('click', (e)=>{
         dropDown.classList.remove('show')
     }
 })
-// document.addEventListener('click', function(e) {
-//     if (!loggedCheck.contains(e.target) && !div.contains(e.target)) {
-//       div.style.display = 'none';
-//     }
-// });
+
+

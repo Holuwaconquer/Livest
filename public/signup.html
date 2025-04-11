@@ -99,7 +99,7 @@
               <p><a class="forgot" href="">Forgot Password?</a></p>
             </div>
             <div id="InvalidText5"></div>
-            <button id="signUp" class="btn btn-login w-100 py-2 text-white my-4 text-center">Sign up</button>
+            <button id="signUp" type="button" class="btn btn-login w-100 py-2 text-white my-4 text-center">Sign up</button>
             <div class="loginWith d-flex justify-content-between align-items-center">
               <div></div>
               <p>Already have an account? <a href="login.html">Sign in</a></p>
@@ -152,7 +152,7 @@
     <script type="module">
       // Import the functions you need from the SDKs you need
       import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
-      import { getAuth, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signInWithRedirect } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
+      import { getAuth, updateProfile, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signInWithRedirect } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
       import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-database.js";
       // TODO: Add SDKs for Firebase products that you want to use
       // https://firebase.google.com/docs/web/setup#available-libraries
@@ -213,11 +213,11 @@
         if (user) {
             // User is signed in
             loggedCheck.innerHTML = `<img style="width: 50px; height: 50px; border-radius: 50%;" src="${user.photoURL}">`
-            console.log("User is signed in:", user);
-            location.href='index.html'
+            // console.log("User is signed in:", user);
+            // location.href='index.html'
         } else {
             // No user is signed in
-            console.log("User is signed out.");
+            console.log("User is not log in.");
             loggedCheck.innerHTML = `<a href="login.html">Login in</a><a data-bs-toggle="modal" data-bs-target="#staticBackdrop" href="">Join Now</a>`
             loggedCheck.firstChild.classList.add('login')
             loggedCheck.lastChild.classList.add('sign')
@@ -234,7 +234,6 @@
             trimmedFName = userFname.value.trim()
             if(trimmedFName.length < 3){
                 invalidText.innerHTML=`<small class="text-danger">First Name cannot be less than 3</small>`
-                // alert("invalidText1")
             }else{
                 invalidText.innerHTML =`<small class="text-primary">First Name is valid</small>`
             }
@@ -279,27 +278,30 @@
               let trimmedLName = userLname.value.trim();
               let trimmedEmail = userEmail.value.trim();
               let trimmedPassword = userPassword.value.trim();  
-              let userDetails = {
-                    userFname: trimmedFName,
-                    userLname: trimmedLName,
-                    userEmail: trimmedEmail,
-                    userPassword: trimmedPassword,
-                    createdAt: new Date().toISOString()
-                }
                 if(flexCheckDefault.checked){
-                  // console.log(userDetails);
                   createUserWithEmailAndPassword(auth, trimmedEmail, trimmedPassword)
                   .then((userCredential) => {
                     alert("Sign up successful")
-                    const user = userCredential.user;
-                    const userRef = ref(database, `/user/${user.uid}`)
-                    console.log(user);
-                    set(userRef, userDetails)
-                    .then(()=>{
-                      alert('info saved')
-                    }).catch((err)=>{
-                      console.log('info not save',err);
-                    })
+                    const user = auth.currentUser;
+                    updateProfile(user, {
+                      displayName: `${trimmedFName} ${trimmedLName}`
+                    }).then(() => {
+                      let userDetails = {
+                        userFname: trimmedFName,
+                        userLname: trimmedLName,
+                        userEmail: trimmedEmail,
+                        createdAt: new Date().toISOString()
+                      }
+                      console.log("Profile updated!");
+                      console.log(user.displayName);
+                      const userRef = ref(database, `/user/${user.uid}`)
+                      set(userRef, userDetails)
+                      .then(()=>{
+                        alert('info saved')
+                      }).catch((err)=>{
+                        console.log('info not save',err);
+                      })
+                    });
                     signOut(auth).then(() => {
                       // Sign-out successful.
                     }).catch((error) => {
@@ -321,15 +323,9 @@
                 }
                 
             }else{
-              signOut(auth).then(() => {
-                // Sign-out successful.
-              }).catch((error) => {
-                // An error happened.
-              });
                 InvalidText5.innerHTML=`<small class="text-danger">Confirm all input are field</small>`
             }
       })
-      
     </script>
 </body>
 </html>
