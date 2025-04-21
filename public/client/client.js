@@ -3,7 +3,7 @@ let sidenav = document.getElementById('sidenav')
 toggleBtn.addEventListener('click', ()=>{
     sidenav.classList.toggle('collapsed')
 
-    let menuLink = document.querySelectorAll('.menu li a');
+    let menuLink = document.querySelectorAll('.menu li');
     menuLink.forEach(linkItem =>{
         let sidenavText = linkItem.querySelector('.sidenavText');
         let sidenavIcon = linkItem.querySelector('.sidenavIcon');
@@ -14,7 +14,7 @@ toggleBtn.addEventListener('click', ()=>{
             // dashboard
             menuLink[0].addEventListener('mouseover', ()=>{
                 tooltips.innerHTML =`<p style="Background-color: #333; font-size: 14px; color: white; padding:8px 15px;
-                 position: absolute; top: 21%; left: 85px; z-index: 1;">Dashboard</p>`
+                 position: absolute; top: 6%; left: 85px; z-index: 1;">Dashboard</p>`
             })
             menuLink[0].addEventListener('mouseout', ()=>{
                 tooltips.innerHTML=""
@@ -22,7 +22,7 @@ toggleBtn.addEventListener('click', ()=>{
             // property
             menuLink[1].addEventListener('mouseover', ()=>{
                 tooltips.innerHTML =`<p style="Background-color: #333; font-size: 14px; color: white; padding:8px 15px;
-                 position: absolute; top: 30%; left: 85px; z-index: 1;">Property</p>`
+                 position: absolute; top: 8%; left: 85px; z-index: 1;">Property</p>`
             })
             menuLink[1].addEventListener('mouseout', ()=>{
                 tooltips.innerHTML=""
@@ -30,7 +30,7 @@ toggleBtn.addEventListener('click', ()=>{
             // order
             menuLink[2].addEventListener('mouseover', ()=>{
                 tooltips.innerHTML =`<p style="Background-color: #333; font-size: 14px; color: white; padding:8px 15px;
-                 position: absolute; top: 38%; left: 85px; z-index: 1;">Order</p>`
+                 position: absolute; top: 11%; left: 85px; z-index: 1;">Order</p>`
             })
             menuLink[2].addEventListener('mouseout', ()=>{
                 tooltips.innerHTML=""
@@ -38,7 +38,7 @@ toggleBtn.addEventListener('click', ()=>{
             // manage client
             menuLink[3].addEventListener('mouseover', ()=>{
                 tooltips.innerHTML =`<p style="Background-color: #333; font-size: 14px; color: white; padding:8px 15px;
-                 position: absolute; top: 46%; left: 85px; z-index: 1;">Manage Client</p>`
+                 position: absolute; top: 13%; left: 85px; z-index: 1;">Message</p>`
             })
             menuLink[3].addEventListener('mouseout', ()=>{
                 tooltips.innerHTML=""
@@ -46,7 +46,7 @@ toggleBtn.addEventListener('click', ()=>{
             // inbox
             menuLink[4].addEventListener('mouseover', ()=>{
                 tooltips.innerHTML =`<p style="Background-color: #333; font-size: 14px; color: white; padding:8px 15px;
-                 position: absolute; top: 55%; left: 85px; z-index: 1;">Inbox</p>`
+                 position: absolute; top: 15%; left: 85px; z-index: 1;">Profile</p>`
             })
             menuLink[4].addEventListener('mouseout', ()=>{
                 tooltips.innerHTML=""
@@ -54,7 +54,7 @@ toggleBtn.addEventListener('click', ()=>{
             // Admin Profile
             menuLink[5].addEventListener('mouseover', ()=>{
                 tooltips.innerHTML =`<p style="Background-color: #333; font-size: 14px; color: white; padding:8px 15px;
-                 position: absolute; top: 63%; left: 85px; z-index: 1;">Admin Profile</p>`
+                 position: absolute; top: 18%; left: 85px; z-index: 1;">Notification</p>`
             })
             menuLink[5].addEventListener('mouseout', ()=>{
                 tooltips.innerHTML=""
@@ -62,7 +62,7 @@ toggleBtn.addEventListener('click', ()=>{
             // settings
             menuLink[6].addEventListener('mouseover', ()=>{
                 tooltips.innerHTML =`<p style="Background-color: #333; font-size: 14px; color: white; padding:8px 15px;
-                 position: absolute; top: 71.5%; left: 85px; z-index: 1;">Settings</p>`
+                 position: absolute; top: 20%; left: 85px; z-index: 1;">Settings</p>`
             })
             menuLink[6].addEventListener('mouseout', ()=>{
                 tooltips.innerHTML=""
@@ -70,17 +70,9 @@ toggleBtn.addEventListener('click', ()=>{
             // Notification
             menuLink[7].addEventListener('mouseover', ()=>{
                 tooltips.innerHTML =`<p style="Background-color: #333; font-size: 14px; color: white; padding:8px 15px;
-                 position: absolute; top: 79.5%; left: 85px; z-index: 1;">Notification</p>`
+                 position: absolute; top: 22%; left: 85px; z-index: 1;">Log Out</p>`
             })
             menuLink[7].addEventListener('mouseout', ()=>{
-                tooltips.innerHTML=""
-            })
-            // Log out
-            menuLink[8].addEventListener('mouseover', ()=>{
-                tooltips.innerHTML =`<p style="Background-color: #333; font-size: 14px; color: white; padding:8px 15px;
-                 position: absolute; top: 80%; left: 85px; z-index: 1; ">Log Out</p>`
-            })
-            menuLink[8].addEventListener('mouseout', ()=>{
                 tooltips.innerHTML=""
             })
         }else{
@@ -148,5 +140,4 @@ document.addEventListener('click', (e)=>{
         dropDown.classList.remove('show')
     }
 })
-
-
+let mainPage = document.getElementById('mainPage')
