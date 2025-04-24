@@ -50,7 +50,7 @@
                         <div style="margin-right: 30px;" class="d-flex align-items-center gap-lg-2 gap-md-2 gap-1" id="showDrop">
                             <div style="position: relative; width: 40px; height: 40px; border-radius: 6px; background-color: blue;">
                                 <div id="dropDownParent" style="width: 100%; cursor: pointer; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column;">
-                                    <img width="100%" style="object-fit: cover;" src=''>
+                                    <img width="100%" height="100%" style="object-fit: cover;" id="userPassport" src=''>
                                 </div>
                             </div>
                             <div class="d-flex flex-column gap-0" style="line-height: 0;">
@@ -115,8 +115,12 @@
                 let verifiedUser = document.getElementById('verifiedUser')
                 currentUserName.innerText = user.displayName
                 verifiedUser.innerText = user.emailVerified ? 'Verified' : 'Not Verified';
-
-
+                const userRef = ref(database, `users/${user.uid}`);
+                onValue(userRef, (snapshot) => {
+                    const data = snapshot.val();
+                    document.getElementById('userPassport').src= data.profilePicture
+                    
+                });
 
                 document.getElementById('logOutUser').addEventListener('click', ()=>{
                     logOut()

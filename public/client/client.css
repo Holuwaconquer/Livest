@@ -112,6 +112,7 @@ p{
 .mainPage{
     position: relative;
     margin-top: 7%;
+    padding: 20px;
 }
 #dropDown p{
     margin: 0;
@@ -189,7 +190,7 @@ p{
         z-index: 100;
     }
     .mainPage{
-        margin-top: 60px !important;
+        margin-top: 80px !important;
         position: static !important;
     }
     .mainPageContainer{

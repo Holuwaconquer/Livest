@@ -4,8 +4,84 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        .btn{
+            background-color: #70be47 !important;
+            border: none !important;
+            outline: none !important;
+            color: white !important;
+        }
+        .btn:hover{
+            background-color: #236301 !important;
+        }
+    </style>
 </head>
 <body>
-    <h1>Posts</h1>
+    <h1>Property</h1>
+    <div class="w-100 d-flex justify-content-end">
+        <div class="">
+            <button class="btn py-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add new Property</button>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table caption-top">
+            <caption>List of users</caption>
+            <thead>
+                <tr>
+                  <th scope="col">S/N</th>
+                  <th scope="col">Thumbnail</th>
+                  <th scope="col">Title</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Location</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">1</th>
+                  <td>Mark</td>
+                  <td>Otto</td>
+                  <td>@mdo</td>
+                  <td>@mdo</td>
+                  <td>@mdo</td>
+                  <td>@mdo</td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
+    <div class=""></div>
+
+
+
+    <!-- Vertically centered modal -->
+     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content p-4">
+                <div class="d-flex justify-content-end mb-3">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div>
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control py-3" id="productName">
+                        <label for="productName">Product Name</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <textarea name="" class="form-control py-3" id="productDesc"></textarea>
+                        <label for="productDesc">Product Description</label>
+                    </div>
+                    <div>
+                        <select class="form-select" name="category" id="category">
+                            <option value="Selected">Choose Category</option>
+                            <option value="DetachedDuplex">Semi Detached Duplex</option>
+                            <option value="Bungalow">Bungalow</option>
+                            <option value="FullyDuplex">Fully Detached Duplex</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+     </div>
+
 </body>
 </html>

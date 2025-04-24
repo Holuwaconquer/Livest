@@ -6,6 +6,59 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Dashboard</h1>
+    <h1>Welcome <span id="userName"></span></h1>
+
+
+
+
+
+
+
+
+
+
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-database.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyASp595xhwD3gYSm_CfzivBe5hE0MtnA_o",
+            authDomain: "livest-real-estate.firebaseapp.com",
+            databaseURL: "https://livest-real-estate-default-rtdb.firebaseio.com",
+            projectId: "livest-real-estate",
+            storageBucket: "livest-real-estate.firebasestorage.app",
+            messagingSenderId: "647434805745",
+            appId: "1:647434805745:web:610c262a9968a1a6ac2450"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase()
+        let userName = document.getElementById('userName')
+        onAuthStateChanged(auth, (user) =>{
+            if(user){
+                console.log(user);
+                const [first, last] = user.displayName.split(' ');
+
+                const uid = user.uid
+                userName.innerText = first
+                const userRef = ref(database, `users/${user.uid}`);
+                onValue(userRef, (snapshot) => {
+                    const data = snapshot.val();
+                    document.getElementById('userPassport').src= data.profilePicture
+                    
+                });
+            }else{  
+                location.href= "../login.html"
+            }
+        })
+    </script>
 </body>
 </html>
