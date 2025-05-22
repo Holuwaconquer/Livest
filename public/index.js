@@ -85,7 +85,7 @@
     } else {
       // No user signed in - show login/signup links
       accountlog.style.display = "flex"; // show the login/signup links
-      loggedCheck.innerHTML = '';
+      // loggedCheck.innerHTML = '';
       if (div.parentElement) {
         div.parentElement.removeChild(div);
       }

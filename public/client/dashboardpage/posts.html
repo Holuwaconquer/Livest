@@ -1,183 +1,254 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        .btnNew{
-            background-color: #70be47 !important;
-            border: none !important;
-            outline: none !important;
-            color: white !important;
-        }
-        .btnNew:hover{
-            background-color: #236301 !important;
-        }
-        ::-webkit-file-upload-button{
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Document</title>
+  <style>
+    .btnNew {
+      background-color: #70be47 !important;
+      border: none !important;
+      outline: none !important;
+      color: white !important;
+    }
+    .btnNew:hover {
+      background-color: #236301 !important;
+    }
+    ::-webkit-file-upload-button{
             display: none;
             cursor: pointer;
             content: "";
         }
-        .propertyForm #postProperty{
-            background-color: #70be47 !important;
-            border: none !important;
-            outline: none !important;
-            color: white !important;
-        }
-    </style>
+    .propertyForm #postProperty {
+      background-color: #70be47 !important;
+      border: none !important;
+      outline: none !important;
+      color: white !important;
+    }
+    #imagePreview {
+      display: none;
+      width: 100px;
+      margin-top: 10px;
+    }
+    #loadingSpinner {
+      display: none;
+      font-weight: bold;
+      color: blue;
+    }
+  </style>
 </head>
 <body>
-    <h1>Property</h1>
-    <div class="w-100 d-flex justify-content-end">
-        <div class="">
-            <button class="btn btnNew py-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add new Property</button>
+  <h1>Property</h1>
+  <div class="w-100 d-flex justify-content-end">
+    <button class="btn btnNew py-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add new Property</button>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table caption-top">
+      <caption>List of properties</caption>
+      <thead>
+        <tr>
+          <th>S/N</th>
+          <th>Thumbnail</th>
+          <th>Title</th>
+          <th>Category</th>
+          <th>Location</th>
+          <th>Price</th>
+          <th>Posted</th>
+        </tr>
+      </thead>
+      <tbody id="productTable"></tbody>
+    </table>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content p-4">
+        <div class="d-flex justify-content-end mb-3">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-    </div>
-    <div class="table-responsive">
-        <table class="table caption-top">
-            <caption>List of users</caption>
-            <thead>
-                <tr>
-                  <th scope="col">S/N</th>
-                  <th scope="col">Thumbnail</th>
-                  <th scope="col">Title</th>
-                  <th scope="col">Category</th>
-                  <th scope="col">Location</th>
-                  <th scope="col">Price</th>
-                  <th scope="col">Posted</th>
-                  <th scope="col">Action</th>
-                </tr>
-              </thead>
-              <tbody id="productTable">
-            </tbody>
-        </table>
-      </div>
-    <div class=""></div>
-
-
-
-    <!-- Vertically centered modal -->
-     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content p-4">
-                <div class="d-flex justify-content-end mb-3">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="propertyForm">
-                    <div class=" mb-3">
-                        <label for="propertyName">Product Name</label>
-                        <input type="text" class="form-control py-3" id="propertyName">
-                    </div>
-                    <div class=" mb-3">
-                        <label for="propertyDesc">Product Description</label>
-                        <textarea name="" class="form-control py-3" id="propertyDesc"></textarea>
-                    </div>
-                    <div>
-                        <select class="form-select mb-3" name="category" id="propertyCategory">
-                            <option value="Selected">Choose Category</option>
-                            <option value="DetachedDuplex">Semi Detached Duplex</option>
-                            <option value="Bungalow">Bungalow</option>
-                            <option value="FullyDuplex">Fully Detached Duplex</option>
-                        </select>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6  mb-3">
-                            <label for="propertyLocation">Location</label>
-                            <input type="text" class="form-control px-2 py-3" name="" id="propertyLocation">
-                        </div>
-                        <div class="col-md-6  mb-3">
-                            <label for="propertyPrice">Price</label>
-                            <input type="text" class="form-control px-2 py-3" name="" id="propertyPrice">
-                        </div>
-                    </div>
-                    <div class="mb-3 ">
-                        <label for="postedBy">Posted By</label>
-                        <input type="text" class="form-control py-3" id="postedBy">
-                    </div>
-                    <input style="border: none; background-color: #c9fdac; cursor: pointer; border-radius: 10px;" type="file" height="50px" class="py-5 mb-3 w-25">
-                    <button class="btn form-control py-3" id="postProperty">Post Property</button>
-                </div>
+        <div class="propertyForm">
+          <div class="mb-3">
+            <label for="propertyName">Product Name</label>
+            <input type="text" class="form-control py-3" id="propertyName" />
+          </div>
+          <div class="mb-3">
+            <label for="propertyDesc">Product Description</label>
+            <textarea class="form-control py-3" id="propertyDesc"></textarea>
+          </div>
+          <div>
+            <select class="form-select mb-3" id="propertyCategory">
+              <option value="">Choose Category</option>
+              <option value="DetachedDuplex">Semi Detached Duplex</option>
+              <option value="Bungalow">Bungalow</option>
+              <option value="FullyDuplex">Fully Detached Duplex</option>
+            </select>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6 mb-3">
+              <label for="propertyLocation">Location</label>
+              <input type="text" class="form-control px-2 py-3" id="propertyLocation" />
             </div>
+            <div class="col-md-6 mb-3">
+              <label for="propertyPrice">Price</label>
+              <input type="text" class="form-control px-2 py-3" id="propertyPrice" />
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="postedBy">Posted By</label>
+            <input type="text" class="form-control py-3" id="postedBy" readonly />
+          </div>
+          <div class="mb-3">
+            <label for="propertyImage" style="cursor:pointer; background:#c9fdac; padding:10px; border-radius:10px;">Choose Image</label>
+            <input type="file" id="propertyImage" style="display:none;" />
+            <img id="imagePreview" />
+            <div id="loadingSpinner">Uploading, please wait...</div>
+          </div>
+          <button class="btn form-control py-3" id="postProperty">Post Property</button>
         </div>
-     </div>
+      </div>
+    </div>
+  </div>
 
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
+    import { getDatabase, ref, set, push, onValue, get, child } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-database.js";
 
-     <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
-        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-database.js";
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
-      
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyASp595xhwD3gYSm_CfzivBe5hE0MtnA_o",
-            authDomain: "livest-real-estate.firebaseapp.com",
-            databaseURL: "https://livest-real-estate-default-rtdb.firebaseio.com",
-            projectId: "livest-real-estate",
-            storageBucket: "livest-real-estate.firebasestorage.app",
-            messagingSenderId: "647434805745",
-            appId: "1:647434805745:web:610c262a9968a1a6ac2450"
+    const firebaseConfig = {
+      apiKey: "AIzaSyASp595xhwD3gYSm_CfzivBe5hE0MtnA_o",
+      authDomain: "livest-real-estate.firebaseapp.com",
+      databaseURL: "https://livest-real-estate-default-rtdb.firebaseio.com",
+      projectId: "livest-real-estate",
+      storageBucket: "livest-real-estate.firebasestorage.app",
+      messagingSenderId: "647434805745",
+      appId: "1:647434805745:web:610c262a9968a1a6ac2450"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const database = getDatabase();
+
+    const propertyName = document.getElementById("propertyName");
+    const propertyDesc = document.getElementById("propertyDesc");
+    const propertyLocation = document.getElementById("propertyLocation");
+    const propertyPrice = document.getElementById("propertyPrice");
+    const propertyCategory = document.getElementById("propertyCategory");
+    const postedBy = document.getElementById("postedBy");
+    const propertyImage = document.getElementById("propertyImage");
+    const postProperty = document.getElementById("postProperty");
+    const productTable = document.getElementById("productTable");
+    const imagePreview = document.getElementById("imagePreview");
+    const loadingSpinner = document.getElementById("loadingSpinner");
+
+    let currentUser = null;
+    let userData = {};
+    const cloudName = "dimlar6iu";
+    const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+    const CLOUDINARY_UPLOAD_PRESET = "Livest";
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) return;
+      currentUser = user;
+
+      const userRef = ref(database, `users/${user.uid}`);
+      onValue(userRef, (snapshot) => {
+        userData = snapshot.val() || {};
+        postedBy.value = `${userData.surname || ""} ${userData.firstname || ""}`;
+      });
+    });
+
+    propertyImage.addEventListener("change", () => {
+      const file = propertyImage.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          imagePreview.src = e.target.result;
+          imagePreview.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    postProperty.addEventListener("click", async () => {
+      if (!currentUser) {
+        alert("Please sign in.");
+        return;
+      }
+
+      const file = propertyImage.files[0];
+      if (!file) {
+        alert("Please upload an image.");
+        return;
+      }
+
+      loadingSpinner.style.display = "block";
+
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+        const response = await fetch(CLOUDINARY_URL, {
+          method: "POST",
+          body: formData
+        });
+
+        const cloudinaryData = await response.json();
+        const imageUrl = cloudinaryData.secure_url;
+
+        const propertyPost = {
+          propertyName: propertyName.value,
+          propertyDesc: propertyDesc.value,
+          propertyLocation: propertyLocation.value,
+          propertyPrice: propertyPrice.value,
+          propertyCategory: propertyCategory.value,
+          postedBy: postedBy.value,
+          postedDate: new Date().toLocaleDateString(),
+          imageUrl: imageUrl
         };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const database = getDatabase()
+        const newPostRef = push(ref(database, "posts"));
+        await set(newPostRef, propertyPost);
 
-        let propertyName = document.getElementById('propertyName')
-        let propertyDesc = document.getElementById('propertyDesc')
-        let propertyLocation = document.getElementById('propertyLocation')
-        let propertyPrice = document.getElementById('propertyPrice')
-        let propertyCategory = document.getElementById('propertyCategory')
-        let postedBy = document.getElementById('postedBy')
-        let postProperty = document.getElementById('postProperty')
-        let productTable = document.getElementById('productTable')
-        
-        
-        onAuthStateChanged(auth, (user)=>{
-            const userRef = ref(database, `users/${user.uid}`);
-            onValue(userRef, (snapshot) => {
-              const data = snapshot.val();
-              let userPhotograph = data.profilePicture
-              console.log(data);
-              postedBy.value = data.surname + " " + data.firstname
+        alert("Property posted successfully!");
+        renderPost(propertyPost);
+        loadingSpinner.style.display = "none";
+      } catch (err) {
+        console.error("Upload failed:", err);
+        alert("Error uploading image or saving post.");
+        loadingSpinner.style.display = "none";
+      }
+    });
 
-              let propertyPost = {
-                  propertyName: propertyName.value,
-                  propertyDesc: propertyDesc.value,
-                  propertyLocation: propertyLocation.value,
-                  propertyPrice: propertyPrice.value,
-                  propertyCategory: propertyCategory.value,
-                  postedBy: data.surname + " " + data.firstname,
-                  postedDate: new Date().toLocaleDateString()
-              }
-              postProperty.addEventListener('click', ()=>{
-                const postRef = ref(database, 'users/' + auth.currentUser.uid)
-                set(postRef, propertyPost)
-                .then(()=>{
-                    alert('info saved')
-                }).catch((err)=>{
-                    console.log('info not save',err);
-                })
-                productTable.innerHTML = `
-                    <tr>
-                        <th>1</th>
-                        <th></th>
-                        <th>${propertyPost.propertyName}</th>
-                        <th>${propertyPost.propertyCategory}</th>
-                        <th>${propertyPost.propertyLocation}</th>
-                        <th>${propertyPost.propertyPrice}</th>
-                        <th>${propertyPost.postedBy}</th>
-                        <th>${propertyPost.postedDate}</th>
-                    </tr>`
-                })  
-            })
-        })
+    function renderPost(post) {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td><img src="${post.imageUrl}" width="60" /></td>
+        <td>${post.propertyName}</td>
+        <td>${post.propertyCategory}</td>
+        <td>${post.propertyLocation}</td>
+        <td>${post.propertyPrice}</td>
+        <td>${post.postedBy}</td>
+        <td>${post.postedDate}</td>
+      `;
+      productTable.appendChild(row);
+    }
 
+    async function loadAllPosts() {
+      try {
+        const snapshot = await get(child(ref(database), "posts"));
+        if (snapshot.exists()) {
+          const posts = snapshot.val();
+          Object.values(posts).forEach(renderPost);
+        }
+      } catch (err) {
+        console.error("Failed to load posts:", err);
+      }
+    }
 
-     </script>
-
+    loadAllPosts();
+  </script>
 </body>
 </html>
