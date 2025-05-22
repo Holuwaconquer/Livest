@@ -19,7 +19,6 @@ header{
     width: 100%;
     height: 90vh;
     position: relative;
-    /* background: linear-gradient(#102e008c, #102e008c), url(./assets/pexels-binyaminmellish-106399.jpg) center center; */
     background-size: cover;
     display: flex;
     flex-direction: column;
@@ -31,11 +30,9 @@ header{
 header::before{
     content: "";
     position: absolute;
-    /* top: 0; */
-    /* left: 0; */
     width: 100%;
     height: 100%;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1));
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.89), rgba(0, 0, 0, 0.801));
     border-bottom-right-radius: 30px;
     border-bottom-left-radius: 30px;
 }
@@ -341,7 +338,53 @@ footer i{
   #closeIcon2{
     display: none;
   }
-
+  .props{
+    padding: 0px 8%;
+  }
+  .propsprice{
+    color: var(--primary-color);
+  }
+  .propsshow{
+    border: ipx solid var(--primary-color);
+    background-color: #e2fad5;
+    padding: 8px 12px;
+    color: var(--primary-color);
+    border-radius: 10px;
+  }
+  .props img{
+    height: 200px;
+  }
+  .propsbuy{
+    border: 1px solid var(--semi-dark);
+    padding: 10px;
+    border-radius: 10px; 
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+}
+.propsbuy::before{
+    content: "";
+    width: 0;
+    height: 100%;
+    border-radius: 8px;
+    background-color: var(--dark-color);
+    top: 0;
+    left: 0;
+    z-index: -1;
+    position: absolute;
+    transition: 0.2s linear;
+}
+.propsbuy:hover{
+    color: white !important;
+    z-index: 1000000;
+}
+.propsbuy:hover::before{
+    width: 100%;
+}
+.indexDropdown div p:hover, 
+.indexDropdown div button:hover{
+  background-color: #71be4763 !important;
+}
 @media screen and (max-width: 900px) {
   .imgSide{
     transform: translateX(0) !important;

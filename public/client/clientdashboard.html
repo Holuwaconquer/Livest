@@ -19,8 +19,8 @@
             <button class="toggle-btn"><i class="fa-solid fa-bars"></i></button>
             <ul class="menu">
                 <li><a class="menuLink" data-page="./dashboardpage/dashboard.html" href=""><span class="sidenavIcon"><i class="fa-solid fa-table-columns"></i></span><span class="sidenavText">Dashboard</span></a></li>
-                <li><a class="menuLink" data-page="./dashboardpage/posts.html" href=""><span class="sidenavIcon"><i class="fa-solid fa-house"></i></span><span class="sidenavText">Property</span></a></li>
-                <li><a class="menuLink" data-page="./dashboardpage/order.html" href=""><span class="sidenavIcon"><i class="fa-solid fa-table-columns"></i></span><span class="sidenavText">Order</span></a></li>
+                <li><a class="menuLink" data-page="./dashboardpage/posts.html" href=""><span class="sidenavIcon"><i class="fa-solid fa-house"></i></span><span class="sidenavText">Listings</span></a></li>
+                <li><a class="menuLink" data-page="./dashboardpage/order.html" href=""><span class="sidenavIcon"><i class="fa-solid fa-table-columns"></i></span><span class="sidenavText">Application</span></a></li>
                 <li><a class="menuLink" data-page="./dashboardpage/message.html" href=""><span class="sidenavIcon"><i class="fa-solid fa-envelope"></i></span><span class="sidenavText">Message</span></a></li>
                 <li><a class="menuLink" data-page="./dashboardpage/profile.html" href=""><span class="sidenavIcon"><i class="fa-solid fa-user-tie"></i></span><span class="sidenavText">Profile</span></a></li>
                 <li><a class="menuLink" data-page="./dashboardpage/notification.html" href=""><span class="sidenavIcon"><i class="fa-solid fa-bell"></i></span><span class="sidenavText">Notification</span></a></li>
@@ -50,7 +50,7 @@
                         <div style="margin-right: 30px;" class="d-flex align-items-center gap-lg-2 gap-md-2 gap-1" id="showDrop">
                             <div style="position: relative; width: 40px; height: 40px; border-radius: 6px; background-color: blue;">
                                 <div id="dropDownParent" style="width: 100%; cursor: pointer; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column;">
-                                    <img width="100%" height="100%" style="object-fit: cover;" id="userPassport" src=''>
+                                    <img width="100%" height="100%" style="object-fit: cover; border-radius: 5px;" id="userPassport" src=''>
                                 </div>
                             </div>
                             <div class="d-flex flex-column gap-0" style="line-height: 0;">
@@ -78,86 +78,7 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
-        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-database.js";
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
-      
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyASp595xhwD3gYSm_CfzivBe5hE0MtnA_o",
-            authDomain: "livest-real-estate.firebaseapp.com",
-            databaseURL: "https://livest-real-estate-default-rtdb.firebaseio.com",
-            projectId: "livest-real-estate",
-            storageBucket: "livest-real-estate.firebasestorage.app",
-            messagingSenderId: "647434805745",
-            appId: "1:647434805745:web:610c262a9968a1a6ac2450"
-        };
-      
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const database = getDatabase()
-    //     let surname = document.getElementById('surname')
-    //   let firstname = document.getElementById('firstname')
-    //   let middlename = document.getElementById('middlename')
-    //   let email = document.getElementById('email')
-        onAuthStateChanged(auth, (user) =>{
-            if(user){
-                // console.log(user);
-                const [first, last] = user.displayName.split(' ');
-                // surname.value = last
-                const uid = user.uid
-                let currentUserName = document.getElementById('currentUserName')
-                let verifiedUser = document.getElementById('verifiedUser')
-                currentUserName.innerText = user.displayName
-                verifiedUser.innerText = user.emailVerified ? 'Verified' : 'Not Verified';
-                const userRef = ref(database, `users/${user.uid}`);
-                onValue(userRef, (snapshot) => {
-                    const data = snapshot.val();
-                    document.getElementById('userPassport').src= data.profilePicture
-                    
-                });
 
-                document.getElementById('logOutUser').addEventListener('click', ()=>{
-                    logOut()
-                })
-                document.getElementById('logUserOut').addEventListener('click', ()=>{
-                    logOut()
-                })
-            }else{  
-                location.href= "../login.html"
-            }
-        })
-        
-        const logOut = ()=>{
-            signOut(auth)
-                .then(() => {
-                    alert('Sign-out successful.')
-                    location.href = "../login.html"
-                }).catch((error) => {
-                    console.log(error);
-                });
-        }
-        document.addEventListener('DOMContentLoaded', () => {
-            let revealMenuBtn = document.getElementById('revealMenuBtn');
-            let sidenav2 = document.getElementById("sidenav");
-            if (revealMenuBtn && sidenav2) {
-                revealMenuBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    sidenav2.classList.toggle('revealMenu');
-                });
-            }
-            document.addEventListener('click', (e)=>{
-                if(!revealMenuBtn.contains(e.target) && !sidenav2.contains(e.target)){
-                    sidenav2.classList.remove('revealMenu');
-                }
-            })
-        });
-    </script>
-    <script src="./client.js"></script>
+    <script type="module" src="./client.js"></script>
 </body>
 </html>
