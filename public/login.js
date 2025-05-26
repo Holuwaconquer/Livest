@@ -1,12 +1,12 @@
 // Import the functions you need from the SDKs you need
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
-      import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
-      import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-database.js";
-      // TODO: Add SDKs for Firebase products that you want to use
-      // https://firebase.google.com/docs/web/setup#available-libraries
-    
-      // Your web app's Firebase configuration
-      document.addEventListener("DOMContentLoaded", () => {
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
+import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-database.js";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+document.addEventListener("DOMContentLoaded", () => {
   const firebaseConfig = {
     apiKey: "AIzaSyASp595xhwD3gYSm_CfzivBe5hE0MtnA_o",
     authDomain: "livest-real-estate.firebaseapp.com",
@@ -41,12 +41,13 @@
       console.log("User is signed out.");
     }
   });
-
+  
   accountlog.firstElementChild.classList.add('login');
   accountlog.lastElementChild.classList.add('sign');
-
+  
   logInBtn.addEventListener('click', () => {
-    InvalidText5.innerHTML = ""; // Clear previous errors
+    logInBtn.textContent = 'processing...'
+    InvalidText5.innerHTML = "";
     const userEmail = document.getElementById('userEmail').value.trim();
     const userPassword = document.getElementById('userPassword').value.trim();
 
@@ -54,9 +55,9 @@
       InvalidText5.innerHTML = `<small class="text-danger">Please enter both email and password.</small>`;
       return;
     }
-
+    
     signInWithEmailAndPassword(auth, userEmail, userPassword)
-      .then((userCredential) => {
+    .then((userCredential) => {
         const user = userCredential.user;
         if (!user.emailVerified) {
           alert("Please verify your email before logging in.");
@@ -73,10 +74,15 @@
           InvalidText5.innerHTML = `<small class="text-danger">No account found with this email.</small>`;
         } else if (err.code === "auth/invalid-email") {
           InvalidText5.innerHTML = `<small class="text-danger">Invalid email format.</small>`;
-        } else {
+        }else if(err.code === "auth/network-request-failed"){
+          InvalidText5.innerHTML = `<small class="text-danger">Network Error, Make sure you have a stable internet connection</small>`;
+        } 
+        else {
           InvalidText5.innerHTML = `<small class="text-danger">${err.message}</small>`;
         }
-      });
+      }).finally(
+        logInBtn.textContent = 'Log In'
+      );
   });
 
   // Menu toggle handlers

@@ -198,8 +198,28 @@ p{
     }
     
 }
+.dashboardDiv div:hover{
+    background-color: #70be47;
+    transition: 0.2s;
+    cursor: pointer;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 
-
-.listings{
-    
+#deleteSpinner::before {
+  content: "";
+  display: inline-block;
+  margin-right: 10px;
+  width: 18px;
+  height: 18px;
+  border: 3px solid #70be47;
+  border-top: 3px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  vertical-align: middle;
+}
+.postTable:hover{
+    background-color: #70be47;
 }

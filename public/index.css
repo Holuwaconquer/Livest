@@ -56,8 +56,8 @@ header video{
     padding: 12px 15px;
     border-radius: 10px;
     margin: 15px 0;
-    box-shadow: 0px 5px 50px 20px rgba(196, 196, 196, 0.349);
-    z-index: 99999999999;
+    box-shadow: 0px 2px 40px 10px rgba(78, 78, 78, 0.349);
+    z-index: 999;
 }
 
 .left-side h2{
@@ -88,6 +88,10 @@ header video{
     color: #ace98b;
     font-size: 18px;
     z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
     
 }
 .showcase h1{
@@ -95,13 +99,18 @@ header video{
     font-size: 3em;
     color: white;
     margin-bottom: 15px;
+    width: 60%;
+    text-align: center;
+}
+.showcase p{
+  width: 60%;
 }
 .filter-search{
     background-color: white;
     box-shadow: 0px 5px 50px 20px rgba(196, 196, 196, 0.349);
     width: 50%;
     margin: auto;
-    transform: translateY(-30%);
+    transform: translateY(-40%);
     border-radius: 40px;
     z-index: 1;
 }
@@ -411,6 +420,10 @@ footer i{
       font-size: 2.4em;
       color: white;
       margin-bottom: 15px;
+      width: 100%;
+  }
+  .showcase p{
+    width: 100%;
   }
   .center-side, .center-login-side{
     position: absolute;
@@ -471,4 +484,146 @@ footer i{
   .filter-search{
     width: 75%;
   }
+}
+.postMore{
+  left: 0;
+  background-color: #0e0e0ece;
+  color: #fff;
+  bottom: 0;
+  transform: translateY(100%);
+}
+.postDiv:hover .postMore{
+  transform: translateY(0%);
+  transition: 0.3s linear;
+}
+.viewPost{
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+  background-color: #0e0e0ece;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  backdrop-filter: blur(2px);
+  position: absolute;
+  transition: all 0.2s ease-in-out;
+  overflow: hidden;
+}
+.viewPost button{
+  background-color: #2f7708;
+  border: none;
+  outline: none;
+  padding: 10px 20px;
+  color: white;
+}
+.imageDiv:hover .viewPost{
+  width: 100%;
+  height: 100%;
+  scale: 1;
+}
+.footer-logo img{
+  opacity: 0.3;
+}
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
+  backdrop-filter: blur(5px); /* optional blur */
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999999; /* lower than .popOut but high enough */
+}
+.modalOverlayShow{
+  display: flex;
+}
+.modalOverlayRemove{
+  display: none;
+}
+.popOut {
+  position: fixed; /* Required for top/left to work properly */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Centers the modal */
+  background-color: white;
+  width: 90vw;
+  height: 90vh;
+  z-index: 10000000000;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.FormDiv{
+  width: 100%;
+  height: 100%;
+}
+.firstTop{
+  padding: 2%;
+  width: 100%;
+  height: 80%;
+}
+.firstTopImg{
+  width: 100%;
+  height: 100%;
+}
+.firstTop img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.secondTop{
+  background-color: #ace98b75;
+  backdrop-filter: blur(5px);
+  border-radius: 10px;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+}
+.detailsRow{
+  padding: 1% 2%;
+}
+.detailsRow > div{
+  box-sizing: border-box;
+  border: 1px solid #2f7708;
+  border-radius: 50px;
+}
+.detailsRow > div:last-child{
+  border: none;
+}
+.secondTop button{
+  border: none;
+  background-color: #2f7708;
+  color: white;
+  border-radius: 50px;
+  width: 100%;
+  padding: 10px;
+  margin-top: 15px;
+}
+.closeBtn {
+  position: absolute;
+  top: 0;
+  right: 0.5rem;
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  color: #333;
+  cursor: pointer;
+  z-index: 1000001;
+}
+.viewMore{
+  border: none;
+  background-color: #000000;
+  width: 100%;
+  border-radius: 50px;
+  color: white;
+  padding: 15px 40px;
 }

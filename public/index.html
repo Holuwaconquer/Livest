@@ -26,6 +26,7 @@
     <div class="top-section">
       <div class="left-side">
         <h2 class="logo">livest</h2>
+         <!-- <img src="./assets/livest-logo.png" width="100px" alt=""> -->
       </div>
       <div class="menu-side" style="font-size: 25px; display: none;">
         <i id="hamburgerIcon" style="cursor: pointer; margin-right: 10px;" class="fa-solid fa-bars"></i>
@@ -60,9 +61,9 @@
         </nav> -->
       </div>
       
-      <h1>Find your perfect <br> investment properties</h1>
-      <p>Explore a section of high-value real estate opportunities <br>
-        designed for financial growth and stability
+      <h1>Discover Your Dream Home Right at Your Fingertips</h1>
+      <p>With customised searches, we help you properties that match
+        your desired location, price type. Start the journey to your ideal property!
       </p>
     </div>
   </header>
@@ -94,53 +95,13 @@
   </main>
 
 
-  <section class="py-5 mb-5" id="mainPage">
+  <section class="py-3 mb-5" id="mainPage">
     <div class="props">
       <div class="d-flex justify-content-between">
-        <p class="mb-4">Showing <strong>1-9</strong> total 72 results</p>
-        <p class="propsshow">Show more</p>
+        <p class="mb-4"><strong>Latest Listed Properties</strong></p>
+        <p class="propsshow">Show more<i style="margin-left: 5px;" class="fa-solid fa-arrow-up-right-from-square"></i></p>
       </div>
-      <div class="row">
-        <!-- first col -->
-        <div class="col-md-4">
-          <div class="w-100">
-            <img class="w-100 rounded-4 mb-3" src="./assets/pexels-expect-best-79873-323772.jpg" alt="">
-            <h3>2 Bedroom Flat</h3>
-            <small>Abuja, Nigeria</small>
-            <small>Bungalow</small>
-            <div class="d-flex align-items-center justify-content-between">
-              <h6 class="propsprice">N15,000,000</h6>
-              <h6 class="propsbuy">Buy Now</h6>
-            </div>
-          </div>
-        </div>
-        <!-- second col -->
-        <div class="col-md-4">
-          <div class="w-100">
-            <img class="w-100 w-100 rounded-4 mb-3" src="./assets/pexels-expect-best-79873-323775.jpg" alt="">
-            <h3>2 Bedroom Flat</h3>
-            <small>Abuja, Nigeria</small>
-            <small>Bungalow</small>
-            <div class="d-flex align-items-center justify-content-between">
-              <h6 class="propsprice">N15,000,000</h6>
-              <h6 class="propsbuy">Buy Now</h6>
-            </div>
-          </div>
-        </div>
-        <!-- third col -->
-        <div class="col-md-4">
-          <div class="w-100">
-            <img class="w-100 w-100 rounded-4 mb-3" src="./assets/pexels-expect-best-79873-323780.jpg" alt="">
-            <h3>2 Bedroom Flat</h3>
-            <small>Abuja, Nigeria</small>
-            <small>Bungalow</small>
-            <div class="d-flex align-items-center justify-content-between">
-              <h6 class="propsprice">N15,000,000</h6>
-              <h6 class="propsbuy">Buy Now</h6>
-            </div>
-          </div>
-        </div>
-        <!-- end of third cols -->
+      <div id="allPosts" class="row">
       </div>
       <!-- end of row -->
     </div>
@@ -177,9 +138,9 @@
   <footer>
     <div class="footerNav row">
       <div class="col-md-4 text-center text-md-start stayConnect">
-        <p>Stay connected, explore opportunities,
-          and invest with confidence. Your real estate
-          success starts here
+        <p>We are dedicated to helping you find the perfect propertywith ease.
+          Explore a variety of options and let our expert team guide you to your ideal
+          home in a efficient way.
         </p>
         <a href=""><i class="fa-brands fa-facebook-f"></i></a>
         <a href=""><i class="fa-brands fa-instagram"></i></a>
@@ -204,12 +165,82 @@
         </ul>
       </div>
     </div>
-    <div class="footer-logo">
-      <h1>Livest</h1>
+    <div class="footer-logo text-center my-4">
+      <!-- <h1>Livest</h1> -->
+       <img width="50%" src="./assets/livest-logo-removebg-preview.png" alt="">
     </div>
   </footer>
 
+  <div class="modalOverlay" id="popOut">
+    <div class="popOut">
+    <button id="closeBtn" class="closeBtn">&times;</button>
+    <div class="FormDiv">
+      <div class="firstTop row justify-content-between align-items-center">
+        <div class="firstTopImg col-12 col-md-8">
+          <img id="postImg" src="./assets/pexels-expect-best-79873-323772.jpg" alt="">
+        </div>
+        <div class="secondTop col-12 col-md-4">
+          <h3 id="postTitle"></h3>
+          <p id="postDesc" class="text-muted">
+          </p>
+          <h4 id="postPrice"></h4>
+          <div class="bg-white rounded-4 p-3">
+            <h5>Agent Information</h5>
+            <div class="d-flex mt-3 flex-column gap-2">
+              <div style="width: 50px; height: 50px; border-radius: 100%;">
+                <img width="100%" src="./assets/IMG-20241228-WA0001.jpg" alt="">
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <h5 id="postAuthor">Peter Fakorede</h5>
+                <h5 id="authorNo">+2349025140981</h5>
+              </div>
+            </div>
+          </div>
+          <button>Send Application</button>
+        </div>
+      </div>
 
+      <!-- bottom section -->
+       <div>
+        <div>
+          <div class="detailsRow row gap-2">
+            <!-- first -->
+            <div class="col-md-3 d-flex justify-content-center align-items-center px-2">
+              <i class="fa-solid fa-location-dot me-2"></i>
+              <div>
+                <small>Location</small>
+                <p id="postLocation"></p>
+              </div>
+            </div>
+            <!-- second -->
+            <div class="col-md-3 d-flex justify-content-center align-items-center px-2">
+              <i class="fa-solid fa-location-dot me-2"></i>
+              <div>
+                <small>Property Type</small>
+                <p id="propertyCategory"></p>
+              </div>
+            </div>
+            <!-- third -->
+            <div class="col-md-3 d-flex justify-content-center align-items-center px-2">
+              <div>
+                <small>Price</small>
+                <p id="propertyPrice"></p>
+              </div>
+            </div>
+            <!-- fourth -->
+            <div class="col-md-2 d-flex justify-content-center align-items-center px-2">
+              <div class="w-100">
+                <button class="viewMore">View More</button>
+              </div>
+            </div>
+            <!-- Repeat for other blocks -->
+          </div>
+        </div>
+       </div>
+    </div>
+  </div>
+
+  </div>
 
 
   <script src="./bootstrap-5.3.3-dist/js/bootstrap.js"></script>

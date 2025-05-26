@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Document</title>
+  <link rel="stylesheet" href="../client.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     .btnNew {
       background-color: #70be47 !important;
@@ -26,7 +28,7 @@
       color: white !important;
     }
     #imagePreview {
-      display: none;
+      /* display: none; */
       width: 100px;
       margin-top: 10px;
     }
@@ -35,12 +37,13 @@
       font-weight: bold;
       color: blue;
     }
+
   </style>
 </head>
 <body>
-  <h1>Property</h1>
+  <h1>My Listing</h1>
   <div class="w-100 d-flex justify-content-end">
-    <button class="btn btnNew py-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add new Property</button>
+    <button class="btn btnNew py-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="fa-solid fa-plus"></i> Add new Property</button>
   </div>
 
   <div class="table-responsive">
@@ -54,7 +57,8 @@
           <th>Category</th>
           <th>Location</th>
           <th>Price</th>
-          <th>Posted</th>
+          <th>Date Posted</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody id="productTable"></tbody>
@@ -80,9 +84,9 @@
           <div>
             <select class="form-select mb-3" id="propertyCategory">
               <option value="">Choose Category</option>
-              <option value="DetachedDuplex">Semi Detached Duplex</option>
+              <option value="Detached Duplex">Semi Detached Duplex</option>
               <option value="Bungalow">Bungalow</option>
-              <option value="FullyDuplex">Fully Detached Duplex</option>
+              <option value="Fully Duplex">Fully Detached Duplex</option>
             </select>
           </div>
           <div class="row mb-3">
@@ -101,8 +105,9 @@
           </div>
           <div class="mb-3">
             <label for="propertyImage" style="cursor:pointer; background:#c9fdac; padding:10px; border-radius:10px;">Choose Image</label>
-            <input type="file" id="propertyImage" style="display:none;" />
-            <img id="imagePreview" />
+            <input type="file" id="propertyImage" multiple style="display:none;" />
+            <div id="imagePreview" style="margin-top: 10px;"></div>
+            <input type="hidden" id="selectedThumbnailIndex" value="0" />
             <div id="loadingSpinner">Uploading, please wait...</div>
           </div>
           <button class="btn form-control py-3" id="postProperty">Post Property</button>
@@ -111,10 +116,30 @@
     </div>
   </div>
 
+  <!-- for delete loader -->
+   <div id="deleteSpinner" style="
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 18px;
+      background: white;
+      border: 2px solid #70be47;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      z-index: 1050;
+    ">
+      Deleting property, please wait...
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
-    import { getDatabase, ref, set, push, onValue, get, child } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-database.js";
+    import { getDatabase, ref, set, push, onValue, get } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyASp595xhwD3gYSm_CfzivBe5hE0MtnA_o",
@@ -126,9 +151,14 @@
       appId: "1:647434805745:web:610c262a9968a1a6ac2450"
     };
 
+    // ✅ Add your Cloudinary credentials here
+    const cloudName = "dimlar6iu";
+    const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+    const CLOUDINARY_UPLOAD_PRESET = "Livest";
+
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const database = getDatabase();
+    const database = getDatabase(app);
 
     const propertyName = document.getElementById("propertyName");
     const propertyDesc = document.getElementById("propertyDesc");
@@ -144,13 +174,14 @@
 
     let currentUser = null;
     let userData = {};
-    const cloudName = "dimlar6iu";
-    const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
-    const CLOUDINARY_UPLOAD_PRESET = "Livest";
+    let editingPostId = null;
+    let selectedFiles = [];
+    let existingImages = [];
 
     onAuthStateChanged(auth, (user) => {
       if (!user) return;
       currentUser = user;
+      loadAllPosts();
 
       const userRef = ref(database, `users/${user.uid}`);
       onValue(userRef, (snapshot) => {
@@ -159,44 +190,138 @@
       });
     });
 
-    propertyImage.addEventListener("change", () => {
-      const file = propertyImage.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          imagePreview.src = e.target.result;
-          imagePreview.style.display = "block";
-        };
-        reader.readAsDataURL(file);
-      }
+    propertyImage.addEventListener("change", (e) => {
+      selectedFiles = Array.from(e.target.files);
+      existingImages = []; // clear previously loaded images if new ones are selected
+      updateImagePreview();
     });
 
+    function updateImagePreview() {
+      imagePreview.innerHTML = "";
+
+      let allImages = [...existingImages];
+      if (selectedFiles.length > 0) {
+        allImages = selectedFiles.map(file => URL.createObjectURL(file));
+      }
+
+      imagePreview.style.display = allImages.length > 0 ? "block" : "none";
+
+      const selectedIndexInput = document.getElementById("selectedThumbnailIndex");
+      let selectedIndex = parseInt(selectedIndexInput.value) || 0;
+
+      allImages.forEach((src, i) => {
+        const wrapper = document.createElement("div");
+        wrapper.style.display = "inline-block";
+        wrapper.style.position = "relative";
+        wrapper.style.marginRight = "10px";
+
+        const img = document.createElement("img");
+        img.src = src;
+        img.style.width = "80px";
+        img.style.height = "80px";
+        img.style.objectFit = "cover";
+        img.style.border = i === selectedIndex ? "3px solid green" : "1px solid #ccc";
+        img.style.cursor = "pointer";
+        img.title = "Click to set as thumbnail";
+
+        img.onclick = () => {
+          selectedIndexInput.value = i;
+          updateImagePreview();
+        };
+
+        // ❌ Remove button
+        const removeBtn = document.createElement("span");
+        removeBtn.innerText = "×";
+        removeBtn.style.position = "absolute";
+        removeBtn.style.top = "-5px";
+        removeBtn.style.right = "-5px";
+        removeBtn.style.background = "red";
+        removeBtn.style.color = "white";
+        removeBtn.style.borderRadius = "50%";
+        removeBtn.style.width = "20px";
+        removeBtn.style.height = "20px";
+        removeBtn.style.textAlign = "center";
+        removeBtn.style.cursor = "pointer";
+        removeBtn.style.lineHeight = "20px";
+        removeBtn.title = "Remove image";
+
+        removeBtn.onclick = (e) => {
+          e.stopPropagation(); // prevent thumbnail selection
+          if (selectedFiles.length > 0) {
+            selectedFiles.splice(i, 1);
+          } else if (existingImages.length > 0) {
+            existingImages.splice(i, 1);
+          }
+
+          if (selectedIndex >= (selectedFiles.length || existingImages.length)) {
+            selectedIndexInput.value = "0";
+          }
+
+          updateImagePreview();
+        };
+
+        wrapper.appendChild(img);
+        wrapper.appendChild(removeBtn);
+        imagePreview.appendChild(wrapper);
+      });
+    }
+
+
+
     postProperty.addEventListener("click", async () => {
-      if (!currentUser) {
-        alert("Please sign in.");
+      if (!currentUser) return alert("Please sign in.");
+
+      if (
+        !propertyName.value.trim() ||
+        !propertyDesc.value.trim() ||
+        !propertyLocation.value.trim() ||
+        !propertyPrice.value.trim() ||
+        !propertyCategory.value.trim()
+      ) {
+        alert("Please fill in all required fields.");
         return;
       }
 
-      const file = propertyImage.files[0];
-      if (!file) {
-        alert("Please upload an image.");
+      if (selectedFiles.length === 0 && existingImages.length === 0) {
+        alert("Please select at least one image.");
         return;
       }
+
+      const selectedIndexInput = document.getElementById("selectedThumbnailIndex");
+      if (!selectedIndexInput) {
+        alert("Missing thumbnail index input.");
+        return;
+      }
+
+      let imageUrls = [...existingImages];
+      let selectedIndex = parseInt(selectedIndexInput.value);
 
       loadingSpinner.style.display = "block";
 
       try {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+        if (selectedFiles.length > 0) {
+          for (const file of selectedFiles) {
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
 
-        const response = await fetch(CLOUDINARY_URL, {
-          method: "POST",
-          body: formData
-        });
+            const response = await fetch(CLOUDINARY_URL, { method: "POST", body: formData });
+            if (!response.ok) throw new Error("Cloudinary upload failed");
 
-        const cloudinaryData = await response.json();
-        const imageUrl = cloudinaryData.secure_url;
+            const data = await response.json();
+            imageUrls.push(data.secure_url);
+          }
+        }
+
+        if (imageUrls.length === 0) {
+          alert("Image upload failed.");
+          loadingSpinner.style.display = "none";
+          return;
+        }
+
+        if (selectedIndex >= imageUrls.length || selectedIndex < 0) {
+          selectedIndex = 0;
+        }
 
         const propertyPost = {
           propertyName: propertyName.value,
@@ -205,50 +330,134 @@
           propertyPrice: propertyPrice.value,
           propertyCategory: propertyCategory.value,
           postedBy: postedBy.value,
+          userId: currentUser.uid,
           postedDate: new Date().toLocaleDateString(),
-          imageUrl: imageUrl
+          timestamp: Date.now(),
+          imageUrl: imageUrls[selectedIndex],
+          imageGallery: imageUrls
         };
 
-        const newPostRef = push(ref(database, "posts"));
-        await set(newPostRef, propertyPost);
+        if (editingPostId) {
+          await set(ref(database, `posts/${editingPostId}`), propertyPost);
+          alert("Post updated successfully!");
+          editingPostId = null;
+        } else {
+          const newPostRef = push(ref(database, `posts`));
+          await set(newPostRef, propertyPost);
+          alert("Property posted successfully!");
+        }
 
-        alert("Property posted successfully!");
-        renderPost(propertyPost);
-        loadingSpinner.style.display = "none";
+        productTable.innerHTML = "";
+        loadAllPosts();
+        document.querySelector(".btn-close").click();
+
+        existingImages = [];
+        selectedFiles = [];
       } catch (err) {
-        console.error("Upload failed:", err);
-        alert("Error uploading image or saving post.");
-        loadingSpinner.style.display = "none";
+        console.error("Failed to save post:", err);
+        alert("An error occurred while saving the post.");
       }
+
+      loadingSpinner.style.display = "none";
     });
 
-    function renderPost(post) {
+    function renderPost(post, index, postId) {
       const row = document.createElement("tr");
+      row.className = 'postTable';
       row.innerHTML = `
+        <td>${index+1}</td>
         <td><img src="${post.imageUrl}" width="60" /></td>
         <td>${post.propertyName}</td>
         <td>${post.propertyCategory}</td>
         <td>${post.propertyLocation}</td>
         <td>${post.propertyPrice}</td>
-        <td>${post.postedBy}</td>
         <td>${post.postedDate}</td>
+        <td style="font-size: 18px;">
+          <span><i style="margin-right: 10px; color: #70be47; cursor: pointer;" class="fa-solid fa-pen-to-square" onclick="editPost('${postId}')"></i></span>
+          <span><i style="color: red; cursor: pointer;" class="fa-solid fa-trash" onclick="deletePost('${postId}')"></i></span>
+        </td>
       `;
       productTable.appendChild(row);
     }
 
     async function loadAllPosts() {
       try {
-        const snapshot = await get(child(ref(database), "posts"));
+        const snapshot = await get(ref(database, `posts`));
         if (snapshot.exists()) {
           const posts = snapshot.val();
-          Object.values(posts).forEach(renderPost);
+
+          const postArray = Object.entries(posts)
+            .map(([postId, postData]) => ({ postId, ...postData }))
+            // ✅ Filter only current user's posts
+            .filter(post => post.userId === currentUser.uid)
+            .sort((a, b) => b.timestamp - a.timestamp);
+
+          productTable.innerHTML = "";
+
+          if (postArray.length === 0) {
+            productTable.innerHTML = "<tr><td colspan='8'>You have not posted any properties yet.</td></tr>";
+            return;
+          }
+
+          postArray.forEach((post, index) => {
+            renderPost(post, index, post.postId);
+          });
+        } else {
+          productTable.innerHTML = "<tr><td colspan='8'>No posts found.</td></tr>";
         }
       } catch (err) {
         console.error("Failed to load posts:", err);
       }
     }
 
-    loadAllPosts();
-  </script>
+
+    window.editPost = async function(postId) {
+      try {
+        const postRef = ref(database, `posts/${postId}`);
+        const snapshot = await get(postRef);
+        if (snapshot.exists()) {
+          const post = snapshot.val();
+          propertyName.value = post.propertyName;
+          propertyDesc.value = post.propertyDesc;
+          propertyLocation.value = post.propertyLocation;
+          propertyPrice.value = post.propertyPrice;
+          propertyCategory.value = post.propertyCategory;
+
+          propertyImage.value = "";
+          imagePreview.innerHTML = "";
+          existingImages = post.imageGallery || [];
+          selectedFiles = [];
+          updateImagePreview();
+
+          document.getElementById("selectedThumbnailIndex").value = "0";
+          editingPostId = postId;
+
+          const modal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
+          modal.show();
+        }
+      } catch (err) {
+        console.error("Failed to load post for editing:", err);
+      }
+    };
+
+    window.deletePost = async function(postId) {
+      if (!confirm("Are you sure you want to delete this property?")) return;
+      const deleteSpinner = document.getElementById("deleteSpinner");
+      deleteSpinner.style.display = "block";
+
+      try {
+        await set(ref(database, `posts/${postId}`), null);
+        alert("Property deleted successfully.");
+        productTable.innerHTML = "";
+        loadAllPosts();
+      } catch (error) {
+        console.error("Delete failed:", error);
+        alert("An error occurred while deleting the property.");
+      }
+
+      deleteSpinner.style.display = "none";
+    };
+</script>
+
 </body>
 </html>

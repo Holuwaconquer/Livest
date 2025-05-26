@@ -33,7 +33,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebas
   // Auth state observer
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      // Update UI with user info
       const currentUserName = document.getElementById('currentUserName');
       const verifiedUser = document.getElementById('verifiedUser');
       const userPassport = document.getElementById('userPassport');
@@ -41,14 +40,14 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebas
       currentUserName.textContent = user.displayName || "User";
       verifiedUser.textContent = user.emailVerified ? 'Verified' : 'Not Verified';
 
-      // Fetch additional user data from database
+
       const userRef = ref(database, `users/${user.uid}`);
       onValue(userRef, (snapshot) => {
         const data = snapshot.val();
         if (data && data.profilePicture) {
           userPassport.src = data.profilePicture;
         } else {
-          userPassport.src = ""; // fallback or default image
+          userPassport.src = ""; // 
         }
       });
 
@@ -57,7 +56,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebas
       document.getElementById('logUserOut').addEventListener('click', logOut);
 
     } else {
-      // Redirect if not logged in
       location.href = "../login.html";
     }
   });
@@ -121,7 +119,7 @@ toggleBtn.addEventListener('click', () => {
             color: white;
             padding: 8px 15px;
             position: absolute;
-            top: ${6 + idx * 2}%;
+            top: ${12 + idx * 6}%;
             left: 85px;
             z-index: 1;
             border-radius: 4px;
