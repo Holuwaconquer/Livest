@@ -1,7 +1,7 @@
 // Import Firebase SDK modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-database.js";
+import { getDatabase, ref, onValue, push, set } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-database.js";
 
 // Firebase config
 const firebaseConfig = {
@@ -25,12 +25,46 @@ const accountlog = document.querySelector('.accountlog');
 const div = document.createElement('div');
 div.id = "dropDownBox";
 
+document.getElementById("applicationForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById("applicantName").value.trim();
+  const phone = document.getElementById("applicantPhone").value.trim();
+  const message = document.getElementById("applicantMessage").value.trim();
+  const { postId, ownerId } = JSON.parse(document.getElementById("appPostId").value);
+
+  if (!name || !phone) {
+    alert("Please fill out required fields.");
+    return;
+  }
+
+  const application = {
+    name,
+    phone,
+    message,
+    date: new Date().toISOString(),
+    fromUserId: auth.currentUser ? auth.currentUser.uid : "guest",
+  };
+
+  try {
+    const applicationRef = push(ref(database, `applications/${ownerId}/${postId}`));
+    await set(applicationRef, application);
+    alert("Application sent successfully!");
+    document.getElementById('applicationModal').style.display = "none";
+    document.getElementById('applicationForm').reset();
+  } catch (err) {
+    console.error("Error submitting application:", err);
+    alert("Failed to send application. Try again later.");
+  }
+});
+
 onAuthStateChanged(auth, (user) => {
   if (user) {
     // User signed in
     const [first] = user.displayName ? user.displayName.split(' ') : ["User"];
     const userRef = ref(database, `users/${user.uid}`);
 
+    
     onValue(userRef, (snapshot) => {
       const data = snapshot.val();
       const userPhotograph = data?.profilePicture || "https://via.placeholder.com/50"; // fallback image
@@ -161,7 +195,7 @@ function createPostCard(post) {
           </div>
           <div>
             <p class="card-text text-muted mb-3"><i class="fa-solid fa-location-dot"></i> ${post.propertyLocation || 'No Category'}</p>
-            <h6 class="card-subtitle mb-2">${post.propertyDesc || 'No Description'}</h6>
+            ${post.propertyDesc ? post.propertyDesc.split(" ").slice(0, 20).join(" ") + (post.propertyDesc.split(" ").length > 20 ? "..." : "") : "No Description"}
           </div>
         </div>
         </div>
@@ -190,6 +224,7 @@ function loadAllPosts() {
       const postCard = createPostCard(post);
       postCard.addEventListener("click", () => {
         showPostModal(post);
+        
       });
       allPostsContainer.appendChild(postCard);
 
@@ -218,15 +253,61 @@ function showPostModal(post) {
   document.getElementById('postPrice').innerHTML = `<h4><strong>&#8358;${post.propertyPrice}</strong></h4>`;
   document.getElementById('postAuthor').textContent = post.postedBy;
   document.getElementById('authorNo').textContent = post.authorPhone;
-  document.getElementById('postImg').src = post.imageUrl;
+  document.getElementById('postImgMain').src = post.imageUrl;
+
+  const postImgContainer = document.getElementById('postImgContainer');
+  postImg.innerHTML = ""; 
+
+if (Array.isArray(post.imageGallery)) {
+  post.imageGallery.forEach((url, index) => {
+    const img = document.createElement("img");
+    img.src = url;
+    img.style.width = "80px";
+    img.style.height = "50px";
+    img.style.objectFit = "fill";
+    img.style.cursor = "pointer"
+    img.classList.add("rounded", "border", "border-1");
+    postImg.appendChild(img);
+
+    img.addEventListener('click', (index)=>{
+      console.log({index, url});
+      document.getElementById('postImgMain').src = url
+      
+    })
+  });
+} else {
+  const img = document.createElement("img");
+  img.src = post.imageUrl || 'https://via.placeholder.com/200';
+  img.style.width = "200px";
+  img.style.height = "150px";
+  img.style.objectFit = "cover";
+  img.classList.add("rounded", "border");
+  postImg.appendChild(img);
+}
+
+
   document.getElementById('postLocation').textContent = post.propertyLocation;
   document.getElementById('propertyCategory').textContent = post.propertyCategory;
   document.getElementById('propertyPrice').innerHTML = `<p><strong>&#8358;${post.propertyPrice}</strong></p>`;
 
-
-  popOut.style.display = "flex"; // Or use a class to show it
+  popOut.style.display = "flex";
 }
 
 
-// Load all posts immediately for every visitor (logged in or not)
 loadAllPosts();
+
+
+document.addEventListener("click", function (event) {
+  if (event.target.classList.contains("sendAppBtn")) {
+    const postId = event.target.getAttribute("data-post-id");
+    const ownerId = event.target.getAttribute("data-owner-id");
+
+    document.getElementById('appPostId').value = JSON.stringify({ postId, ownerId });
+    document.getElementById('applicationModal').style.display = "flex";
+  }
+});
+
+document.getElementById("closeAppModal").addEventListener("click", () => {
+  document.getElementById('applicationModal').style.display = "none";
+});
+

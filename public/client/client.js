@@ -1,3 +1,4 @@
+import Swal from 'https://cdn.skypack.dev/sweetalert2';
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
   import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-database.js";
@@ -20,15 +21,42 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebas
 
   // Utility function to handle logout
   const logOut = () => {
+    Swal.fire({
+      title: 'Signing out...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
     signOut(auth)
       .then(() => {
-        alert('Sign-out successful.');
-        location.href = "../login.html";
+        Swal.fire({
+          icon: 'success',
+        title: 'Sign Out Successful',
+        text: 'Redirecting you to the login page.',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        }).then(() => {
+          location.href = "../login.html";
+        });
       })
       .catch((error) => {
-        console.error("Error signing out:", error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error signing out',
+          text: error.message,
+          confirmButtonColor: '#3085d6'
+        });
       });
   };
+  document.addEventListener('DOMContentLoaded', () => {
+    const logOutUserBtn = document.getElementById('logOutUser');
+    const logUserOutBtn = document.getElementById('logUserOut');
+
+    if (logOutUserBtn) logOutUserBtn.addEventListener('click', logOut);
+    if (logUserOutBtn) logUserOutBtn.addEventListener('click', logOut);
+  });
 
   // Auth state observer
   onAuthStateChanged(auth, (user) => {
@@ -50,10 +78,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebas
           userPassport.src = ""; // 
         }
       });
-
-      // Setup logout buttons
-      document.getElementById('logOutUser').addEventListener('click', logOut);
-      document.getElementById('logUserOut').addEventListener('click', logOut);
 
     } else {
       location.href = "../login.html";
@@ -140,18 +164,23 @@ toggleBtn.addEventListener('click', () => {
 });
 
 // Page loading with fetch + inline scripts
+const loader = document.getElementById('dynamicLoader');
 function loadPage(page) {
+
+  loader.style.display = 'flex';
   setTimeout(() => {
     fetch(page)
-      .then(response => response.text())
-      .then(data => {
+    .then(response => response.text())
+    .then(data => {
         mainPage.innerHTML = data;
         localStorage.setItem("lastPage", page);
         runInlineScripts(mainPage);
       })
       .catch(err => {
         console.error("Error loading page:", err);
-      });
+      }).finally(()=>{
+        loader.style.display = 'none';
+      })
   }, 1000);
 }
 

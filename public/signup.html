@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon-16x16.png">
+    <link rel="manifest" href="./assets/site.webmanifest">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fascinate+Inline&display=swap" rel="stylesheet">
@@ -62,6 +66,10 @@
       <h1>Sign Up & grow your wealth</h1>
     </div>
 
+    <button id="resendVerification" style="display:none;" class="btn btn-warning">
+      Resend Verification Email
+    </button>
+
     <div class="loginForm">
       <div class="row formRow align-items-center">
         <!-- col-md 1 -->
@@ -95,9 +103,10 @@
             </div>
             <div class="passwordInput mb-3">
               <label class="form-label" for="password">Password</label>
-              <div class="input-group">
+              <div id="passwordInput2" class="input-group">
                 <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
                 <input type="password" id="userPassword" class="p-2 form-control" placeholder="Enter your Password">
+                <i id="eyecheck2" class="fa-solid fa-eye-slash" style="cursor: pointer;"></i>
               </div>  
               <p id="InvalidText4"></p>
             </div>

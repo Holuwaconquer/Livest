@@ -251,7 +251,8 @@
 
 
 
-    <script type="module">
+  <script type="module">
+  import Swal from 'https://cdn.skypack.dev/sweetalert2';
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
   import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-database.js";
@@ -268,7 +269,7 @@
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const database = getDatabase();
+  const database = getDatabase(app);
 
   // Form elements
   const surname = document.getElementById('surname');
@@ -303,9 +304,10 @@
     
     // If user.displayName is set, split it into first and last names
     if (user.displayName) {
-      const [first, last] = user.displayName.split(' ');
-      firstname.value = first || "";
-      surname.value = last || "";
+      const nameParts = user.displayName.split(' ');
+      const first = nameParts[0] || '';
+      const last = nameParts.slice(1).join(' ') || '';
+
     }
     email.value = user.email || "";
 
@@ -317,6 +319,10 @@
       preview.src = URL.createObjectURL(file);
       preview.style.display = "block";
 
+      // Disable save while uploading
+      saveInfo.disabled = true;
+      saveInfo.textContent = "Uploading...";
+
       const formData = new FormData();
       formData.append("file", file);
       formData.append("upload_preset", uploadPreset);
@@ -327,12 +333,26 @@
           body: formData
         });
         const data = await response.json();
+        console.log("Cloudinary response:", data);
+
         selectedImageUrl = data.secure_url;
+        console.log("Selected Image URL:", selectedImageUrl);
+
+        // Enable save button now that upload is done
+        saveInfo.disabled = false;
+        saveInfo.textContent = "Save";
       } catch (error) {
         console.error("Cloudinary upload error:", error);
-        alert("Failed to upload image.");
+        Swal.fire({
+          icon: 'error',
+          title: 'Image Upload Failed',
+          text: 'Could not upload image. Try again.',
+        });
+        saveInfo.disabled = false;
+        saveInfo.textContent = "Save";
       }
     });
+
 
     // Edit button click
     editInfo.addEventListener('click', () => {
@@ -352,83 +372,102 @@
     });
 
     // Save button click
-    saveInfo.addEventListener('click', () => {
-      const userProfile = {
-        surname: surname.value,
-        firstname: firstname.value,
-        middlename: middlename.value,
-        email: email.value,
-        dob: dob.value,
-        gender: gender.value,
-        maritalStatus: maritalStatus.value,
-        country: country.value,
-        stateOrigin: stateOrigin.value,
-        houseAddress: houseAddress.value,
-        businessName: businessName.value,
-        businessEmail: businessEmail.value,
-        businessNumber: businessNumber.value,
-        phoneNumber: phoneNumber.value,
-        phoneNumber2: phoneNumber2.value,
-        profilePicture: selectedImageUrl
-      };
-
-      set(userRef, userProfile)
-        .then(() => {
-          alert("Information saved successfully!");
-          editInfo.style.display = "block";
-          saveInfo.style.display = "none";
-
-          [
-            surname, firstname, middlename, email, dob, gender, maritalStatus,
-            country, stateOrigin, houseAddress, businessName, businessEmail,
-            businessNumber, phoneNumber, phoneNumber2
-          ].forEach(input => {
-            input.disabled = true;
-            input.style.cursor = "not-allowed";
+    saveInfo.addEventListener('click', async () => {
+        // Only trigger save if file is already uploaded or no file selected
+        if (fileInput.files.length && !selectedImageUrl) {
+          return Swal.fire({
+            icon: 'warning',
+            title: 'Wait!',
+            text: 'Please wait for image to finish uploading.',
           });
+        }
 
-          fileInput.style.display = "none";
-        })
-        .catch((error) => {
-          alert("Error saving information: " + error.message);
-        });
-    });
+        const userProfile = {
+          surname: surname.value,
+          firstname: firstname.value,
+          middlename: middlename.value,
+          email: email.value,
+          dob: dob.value,
+          gender: gender.value,
+          maritalStatus: maritalStatus.value,
+          country: country.value,
+          stateOrigin: stateOrigin.value,
+          houseAddress: houseAddress.value,
+          businessName: businessName.value,
+          businessEmail: businessEmail.value,
+          businessNumber: businessNumber.value,
+          phoneNumber: phoneNumber.value,
+          phoneNumber2: phoneNumber2.value,
+          profilePicture: selectedImageUrl || preview.src
+        };
 
-    // Load existing user data realtime
+        console.log("Saving user profile:", userProfile);
+
+        console.log("Final profilePicture value:", selectedImageUrl);
+        set(userRef, userProfile)
+          .then(() => {
+            Swal.fire({
+              icon: 'success',
+              title: 'Success',
+              text: 'Information saved successfully!',
+              timer: 2000,
+              showConfirmButton: false
+            });
+
+            editInfo.style.display = "block";
+            saveInfo.style.display = "none";
+
+            [
+              surname, firstname, middlename, email, dob, gender, maritalStatus,
+              country, stateOrigin, houseAddress, businessName, businessEmail,
+              businessNumber, phoneNumber, phoneNumber2
+            ].forEach(input => {
+              input.disabled = true;
+              input.style.cursor = "not-allowed";
+            });
+
+            fileInput.style.display = "none";
+          })
+          .catch((error) => {
+            console.error("Error saving user info:", error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'Failed to save information.',
+            });
+          });
+      });
+
+
+    // Load existing data from Firebase if available
     onValue(userRef, (snapshot) => {
       const data = snapshot.val();
       if (!data) return;
 
-      selectedImageUrl = data.profilePicture || "";
+      surname.value = data.surname || "";
+      firstname.value = data.firstname || "";
+      middlename.value = data.middlename || "";
+      email.value = data.email || "";
+      dob.value = data.dob || "";
+      gender.value = data.gender || "";
+      maritalStatus.value = data.maritalStatus || "";
+      country.value = data.country || "";
+      stateOrigin.value = data.stateOrigin || "";
+      houseAddress.value = data.houseAddress || "";
+      businessName.value = data.businessName || "";
+      businessEmail.value = data.businessEmail || "";
+      businessNumber.value = data.businessNumber || "";
+      phoneNumber.value = data.phoneNumber || "";
+      phoneNumber2.value = data.phoneNumber2 || "";
 
-  if (selectedImageUrl) {
-    preview.src = selectedImageUrl;
-    preview.style.display = "block";
-  } else {
-    preview.style.display = "none";
-  }
-      surname.value = data.surname || '';
-      firstname.value = data.firstname || '';
-      middlename.value = data.middlename || '';
-      email.value = data.email || '';
-      dob.value = data.dob || '';
-      gender.value = data.gender || '';
-      maritalStatus.value = data.maritalStatus || '';
-      country.value = data.country || '';
-      stateOrigin.value = data.stateOrigin || '';  // Fixed typo here
-      houseAddress.value = data.houseAddress || '';
-      businessName.value = data.businessName || '';
-      businessEmail.value = data.businessEmail || '';
-      businessNumber.value = data.businessNumber || '';
-      phoneNumber.value = data.phoneNumber || '';
-      phoneNumber2.value = data.phoneNumber2 || '';
-      preview.src = data.profilePicture || "";
-      preview.style.display = preview.src ? "block" : "none";
-
-
+      if (data.profilePicture) {
+        preview.src = data.profilePicture;
+        preview.style.display = "block";
+      }
     });
   });
 </script>
+
 
 </body>
 </html>

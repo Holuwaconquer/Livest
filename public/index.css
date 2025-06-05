@@ -306,9 +306,16 @@ footer i{
   .btn-login{
     background-color: #70be47 !important;
     transition: 0.2s ease;
+    box-shadow: inset 2px 2px 2px 0px rgba(255,255,255,.5),
+   7px 7px 20px 0px rgba(0,0,0,.1),
+   4px 4px 5px 0px rgba(0,0,0,.1);
   }
   .btn-login:hover{
     background-color: #1b4903;
+    box-shadow: 4px 4px 6px 0 rgba(255,255,255,.5),
+                -4px -4px 6px 0 rgba(116, 125, 136, .5), 
+      inset -4px -4px 6px 0 rgba(255,255,255,.2),
+      inset 4px 4px 6px 0 rgba(0, 0, 0, .4);
   }
   .goApp{
     gap: 1em;
@@ -571,6 +578,7 @@ footer i{
   height: 80%;
 }
 .firstTopImg{
+  position: relative;
   width: 100%;
   height: 100%;
 }
@@ -626,4 +634,32 @@ footer i{
   border-radius: 50px;
   color: white;
   padding: 15px 40px;
+}
+#postImg{
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+}
+
+.loginPassword{
+  position: relative;
+}
+#eyecheck{
+  position: absolute;
+  right: 10px;
+  top: 35%;
+  z-index: 1000;
+}
+#eyecheck2{
+  position: absolute;
+  right: 10px;
+  top: 35%;
+  z-index: 1000;
+}
+#passwordInput2{
+  position: relative;
 }
