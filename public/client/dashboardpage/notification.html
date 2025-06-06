@@ -1,18 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Notification</title>
+  <style>
+    #notificationList {
+      position: absolute;
+      top: 40px;
+      left: 10px;
+      background: white;
+      border: 1px solid #ccc;
+      width: 100%;
+      max-height: 400px;
+      overflow-y: auto;
+      display: none;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    }
+    #notificationList li {
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+    }
+    #notificationList li.unread {
+      font-weight: bold;
+    }
+    #notificationCount {
+      color: red;
+      font-weight: bold;
+      margin-left: 5px;
+    }
+
+    #notificationList li.notification-item {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+#notificationList li.unread {
+  background-color: #f0f8ff;
+  font-weight: bold;
+}
+
+#notificationList li strong {
+  font-size: 14px;
+}
+
+#notificationList li small {
+  font-size: 12px;
+  color: gray;
+}
+
+  </style>
 </head>
 <body>
-    <h1>Notification</h1>
+  <h1>Notification <span id="notificationCount"></span></h1>
+  <div style="position: relative; width: 100%; display: inline-block;">
+    <ul id="notificationList"></ul>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
+    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-database.js";
+
+    // Your Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyASp595xhwD3gYSm_CfzivBe5hE0MtnA_o",
+        authDomain: "livest-real-estate.firebaseapp.com",
+        databaseURL: "https://livest-real-estate-default-rtdb.firebaseio.com",
+        projectId: "livest-real-estate",
+        storageBucket: "livest-real-estate.firebasestorage.app",
+        messagingSenderId: "647434805745",
+        appId: "1:647434805745:web:610c262a9968a1a6ac2450"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
 
 
 
-    <script>
-        console.log("This is another page");
-        
-    </script>
+    const list = document.getElementById('notificationList');
+    const notificationCount = document.getElementById('notificationCount');
+
+
+    function loadNotifications() {
+    onAuthStateChanged(auth, (user) => {
+        if (!user) {
+        console.log("User not logged in");
+        notificationCount.textContent = '';
+        list.innerHTML = '<li>Please log in to see notifications.</li>';
+        return;
+        }
+        console.log("Logged in user UID:", user.uid);
+        const notificationsRef = ref(db, `notifications/${user.uid}`);
+        onValue(notificationsRef, (snapshot) => {
+            const notifications = snapshot.val();
+            list.innerHTML = '';
+            list.style.display = 'block'; // 👈 Show the list once loaded
+
+            if (!notifications) {
+                notificationCount.textContent = '';
+                list.innerHTML = '<li>No notifications</li>';
+                return;
+            }
+        let unreadCount = 0;
+        Object.entries(notifications).forEach(([id, notification]) => {
+            const li = document.createElement('li');
+            li.classList.add('notification-item');
+            if (!notification.read) li.classList.add('unread');
+
+            let time = 'Unknown time';
+            if (notification.timestamp) {
+                try {
+                    time = new Date(notification.timestamp).toLocaleString();
+                } catch (e) {
+                    console.warn("Invalid timestamp:", notification.timestamp);
+                }
+                console.log(notification)
+            }
+
+            const sender = notification.name || 'System';
+            const message = notification.message || 'No message';
+
+            li.innerHTML = `
+                <div style="display: flex; flex-direction: column;">
+                <strong>${sender}</strong>
+                <span>${message}</span>
+                <small style="color: gray;">${time}</small>
+                </div>
+            `;
+
+            li.addEventListener('click', () => {
+                update(ref(db, `notifications/${user.uid}/${id}`), { read: true });
+                li.classList.remove('unread');
+                unreadCount--;
+                notificationCount.textContent = unreadCount > 0 ? unreadCount : '';
+            });
+
+            list.appendChild(li);
+            });
+
+            notificationCount.textContent = unreadCount > 0 ? unreadCount : '';
+        });
+    });
+    }
+    loadNotifications();
+  </script>
 </body>
 </html>

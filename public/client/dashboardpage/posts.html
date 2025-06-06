@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Document</title>
   <link rel="stylesheet" href="../client.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     .btnNew {
@@ -85,9 +86,9 @@
           <div>
             <select class="form-select mb-3" id="propertyCategory">
               <option value="">Choose Category</option>
-              <option value="Detached Duplex">Semi Detached Duplex</option>
+              <option value="Semi Detached Duplex">Semi Detached Duplex</option>
               <option value="Apartment">Apartment</option>
-              <option value="Fully Duplex">Fully Detached Duplex</option>
+              <option value="Fully Detached Duplex">Fully Detached Duplex</option>
             </select>
           </div>
           <div class="row mb-3">
@@ -409,7 +410,7 @@
       const row = document.createElement("tr");
       row.className = 'postTable';
       row.innerHTML = `
-        <td>${index+1}</td>
+        <td>${index + 1}</td>
         <td><img src="${post.imageUrl}" width="60" /></td>
         <td>${post.propertyName}</td>
         <td>${post.propertyCategory}</td>
@@ -417,12 +418,13 @@
         <td>${post.propertyPrice}</td>
         <td>${post.postedDate}</td>
         <td style="font-size: 18px;">
-          <span><i style="margin-right: 10px; color: #70be47; cursor: pointer;" class="fa-solid fa-pen-to-square" onclick="editPost('${postId}')"></i></span>
-          <span><i style="color: red; cursor: pointer;" class="fa-solid fa-trash" onclick="deletePost('${postId}')"></i></span>
+          <span><i style="margin-right: 10px; color: #70be47; cursor: pointer;" class="fa-solid fa-pen-to-square" onclick="editPost('${postId}', '${post.userId}')"></i></span>
+          <span><i style="color: red; cursor: pointer;" class="fa-solid fa-trash" onclick="deletePost('${postId}', '${post.userId}')"></i></span>
         </td>
       `;
       productTable.appendChild(row);
     }
+
 
     async function loadAllPosts() {
       try {
@@ -431,9 +433,8 @@
           const posts = snapshot.val();
 
           const postArray = Object.entries(posts)
-            .map(([postId, postData]) => ({ postId, ...postData }))
-            // ✅ Filter only current user's posts
-            .filter(post => post.userId === currentUser.uid)
+            .map(([postId, postData]) => ({ postId, ownerId: postData.userId, ...postData }))
+            .filter(post => post.ownerId === currentUser.uid)
             .sort((a, b) => b.timestamp - a.timestamp);
 
           productTable.innerHTML = "";
@@ -455,7 +456,11 @@
     }
 
 
-    window.editPost = async function(postId) {
+    window.editPost = async function(postId, userId) {
+      if (userId  !== currentUser.uid) {
+        alert("You cannot edit this post.");
+        return;
+      }
       try {
         const postRef = ref(database, `posts/${postId}`);
         const snapshot = await get(postRef);
@@ -484,7 +489,11 @@
       }
     };
 
-    window.deletePost = async function(postId) {
+    window.deletePost = async function(postId, userId){
+      if (userId !== currentUser.uid) {
+        alert("You cannot delete this post.");
+        return;
+      }
       const newresult = await Swal.fire({
         title: "Are you sure?",
         text: "This will permanently delete this posts.",

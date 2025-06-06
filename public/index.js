@@ -13,11 +13,17 @@ const firebaseConfig = {
   messagingSenderId: "647434805745",
   appId: "1:647434805745:web:610c262a9968a1a6ac2450"
 };
+// Helper to validate Firebase keys (no ".", "#", "$", "[", or "]" and non-empty)
+function isValidFirebaseKey(key) {
+  if (typeof key !== 'string' || key.length === 0) return false;
+  const invalidChars = ['.', '#', '$', '[', ']'];
+  return !invalidChars.some(char => key.includes(char));
+}
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const database = getDatabase();
+const database = getDatabase(app);
 
 // DOM elements
 const loggedCheck = document.getElementById('loggedCheck');
@@ -30,9 +36,28 @@ document.getElementById("applicationForm").addEventListener("submit", async (e) 
 
   const name = document.getElementById("applicantName").value.trim();
   const phone = document.getElementById("applicantPhone").value.trim();
+  const applicantEmail = document.getElementById("applicantEmail").value.trim();
   const message = document.getElementById("applicantMessage").value.trim();
-  const { postId, ownerId } = JSON.parse(document.getElementById("appPostId").value);
 
+  let postData;
+  try {
+    postData = JSON.parse(document.getElementById("appPostId").value);
+  } catch (err) {
+    alert("Invalid post data. Please try again.");
+    console.error("Error parsing post data:", err);
+    return;
+  }
+
+  // Trim the IDs just in case
+  const postId = (postData.postId || "").trim();
+  const userId = (postData.userId || "").trim();
+
+  console.log("Submitting application with postId:", postId, "userId:", userId);
+
+  if (!isValidFirebaseKey(userId) || !isValidFirebaseKey(postId)) {
+    alert("Invalid application data.");
+    return;
+  }
   if (!name || !phone) {
     alert("Please fill out required fields.");
     return;
@@ -41,14 +66,34 @@ document.getElementById("applicationForm").addEventListener("submit", async (e) 
   const application = {
     name,
     phone,
+    applicantEmail,
     message,
     date: new Date().toISOString(),
     fromUserId: auth.currentUser ? auth.currentUser.uid : "guest",
   };
 
   try {
-    const applicationRef = push(ref(database, `applications/${ownerId}/${postId}`));
-    await set(applicationRef, application);
+    const appRef = push(ref(database, `applications/${userId}/${postId}`));
+    await set(appRef, application);
+
+    // Notification payload
+    const notification = {
+      type: "new_application",
+      message: `${name} has applied to your post.`,
+      timestamp: new Date().toISOString(),
+      postId,
+      fromUserId: auth.currentUser ? auth.currentUser.uid : "guest",
+      name: name,
+      phone: phone,
+      read: false
+    };
+    
+    // Push the notification to the owner's notification list
+    if (auth.currentUser) {
+      const notificationRef = push(ref(database, `notifications/${userId}`));
+      await set(notificationRef, notification);
+    }
+
     alert("Application sent successfully!");
     document.getElementById('applicationModal').style.display = "none";
     document.getElementById('applicationForm').reset();
@@ -57,6 +102,8 @@ document.getElementById("applicationForm").addEventListener("submit", async (e) 
     alert("Failed to send application. Try again later.");
   }
 });
+
+
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
@@ -180,7 +227,14 @@ function createPostCard(post) {
         <img src="${post.imageUrl || 'https://via.placeholder.com/300x200'}" class="card-img-top rounded-4" alt="${post.propertyName || 'Property'}">
         <div class="viewPost d-flex justify-content-center align-items-center position-absolute rounded-4">
           <button class="btn showPopOut">View Post</button>
-          <button class="btn">Send Application</button>
+          <button 
+            class="btn sendAppBtn" 
+            data-post-id="${post.postId || post.id || ''}" 
+            data-owner-id="${post.userId || post.postedById || ''}"
+          >
+            Send Application
+          </button>
+
         </div>
       </div>
       <div class="postMore w-100 py-2 px-1 d-flex position-absolute rounded-bottom-4 justify-content-between align-items-center">
@@ -209,7 +263,7 @@ function loadAllPosts() {
   const postsRef = ref(database, "posts");
 
   onValue(postsRef, (snapshot) => {
-    allPostsContainer.innerHTML = ""; // Clear old posts
+    allPostsContainer.innerHTML = "";
     const posts = snapshot.val();
 
     if (!posts) {
@@ -217,21 +271,22 @@ function loadAllPosts() {
       return;
     }
 
-    // Convert posts object to array and sort by timestamp descending
-    const postsArray = Object.values(posts).sort((a, b) => b.timestamp - a.timestamp);
+    // Add postId to each post
+    const postsArray = Object.entries(posts).map(([key, post]) => ({
+      ...post,
+      postId: key, // This line is critical
+    }));
 
     postsArray.forEach(post => {
       const postCard = createPostCard(post);
       postCard.addEventListener("click", () => {
         showPostModal(post);
-        
       });
       allPostsContainer.appendChild(postCard);
-
     });
   });
-  
 }
+
 const popOut = document.getElementById('popOut')
 const closeBtn = document.getElementById('closeBtn')
 const showPopOut = document.getElementById('showPopOut')
@@ -246,7 +301,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
-
+const postImg = document.getElementById('postImg')
 function showPostModal(post) {
   document.getElementById('postTitle').textContent = post.propertyName;
   document.getElementById('postDesc').textContent = post.propertyDesc;
@@ -255,7 +310,7 @@ function showPostModal(post) {
   document.getElementById('authorNo').textContent = post.authorPhone;
   document.getElementById('postImgMain').src = post.imageUrl;
 
-  const postImgContainer = document.getElementById('postImgContainer');
+  // const postImgContainer  = document.getElementById('postImgContainer');
   postImg.innerHTML = ""; 
 
 if (Array.isArray(post.imageGallery)) {
@@ -269,7 +324,7 @@ if (Array.isArray(post.imageGallery)) {
     img.classList.add("rounded", "border", "border-1");
     postImg.appendChild(img);
 
-    img.addEventListener('click', (index)=>{
+    img.addEventListener('click', ()=>{
       console.log({index, url});
       document.getElementById('postImgMain').src = url
       
@@ -299,10 +354,23 @@ loadAllPosts();
 
 document.addEventListener("click", function (event) {
   if (event.target.classList.contains("sendAppBtn")) {
-    const postId = event.target.getAttribute("data-post-id");
-    const ownerId = event.target.getAttribute("data-owner-id");
+    const postIdRaw = event.target.getAttribute("data-post-id") || "";
+    const userIdRaw = event.target.getAttribute("data-owner-id") || "";
 
-    document.getElementById('appPostId').value = JSON.stringify({ postId, ownerId });
+    // Trim values to avoid accidental spaces causing issues
+    const postId = postIdRaw.trim();
+    const userId = userIdRaw.trim();
+
+    // Debug output for values
+    console.log("Setting appPostId with:", { postId, userId });
+
+    // Optional: Validate here before setting
+    if (!isValidFirebaseKey(userId) || !isValidFirebaseKey(postId)) {
+      alert("Invalid post or owner ID in button attributes.");
+      return;
+    }
+
+    document.getElementById('appPostId').value = JSON.stringify({ postId, userId });
     document.getElementById('applicationModal').style.display = "flex";
   }
 });
@@ -310,4 +378,3 @@ document.addEventListener("click", function (event) {
 document.getElementById("closeAppModal").addEventListener("click", () => {
   document.getElementById('applicationModal').style.display = "none";
 });
-
