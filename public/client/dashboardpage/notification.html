@@ -102,54 +102,58 @@
         console.log("Logged in user UID:", user.uid);
         const notificationsRef = ref(db, `notifications/${user.uid}`);
         onValue(notificationsRef, (snapshot) => {
-            const notifications = snapshot.val();
-            list.innerHTML = '';
-            list.style.display = 'block'; // 👈 Show the list once loaded
+          const notifications = snapshot.val();
+          list.innerHTML = '';
+          list.style.display = 'block';
 
-            if (!notifications) {
-                notificationCount.textContent = '';
-                list.innerHTML = '<li>No notifications</li>';
-                return;
-            }
-        let unreadCount = 0;
-        Object.entries(notifications).forEach(([id, notification]) => {
+          if (!notifications) {
+            notificationCount.textContent = '';
+            list.innerHTML = '<li>No notifications</li>';
+            return;
+          }
+
+          let unreadCount = 0;
+          Object.entries(notifications).forEach(([id, notification]) => {
             const li = document.createElement('li');
             li.classList.add('notification-item');
-            if (!notification.read) li.classList.add('unread');
+            if (!notification.read) {
+              li.classList.add('unread');
+              unreadCount++; // count unread notifications
+            }
 
             let time = 'Unknown time';
             if (notification.timestamp) {
-                try {
-                    time = new Date(notification.timestamp).toLocaleString();
-                } catch (e) {
-                    console.warn("Invalid timestamp:", notification.timestamp);
-                }
-                console.log(notification)
+              try {
+                time = new Date(notification.timestamp).toLocaleString();
+              } catch (e) {
+                console.warn("Invalid timestamp:", notification.timestamp);
+              }
             }
 
             const sender = notification.name || 'System';
             const message = notification.message || 'No message';
 
             li.innerHTML = `
-                <div style="display: flex; flex-direction: column;">
+              <div style="display: flex; flex-direction: column;">
                 <strong>${sender}</strong>
                 <span>${message}</span>
                 <small style="color: gray;">${time}</small>
-                </div>
+              </div>
             `;
 
             li.addEventListener('click', () => {
-                update(ref(db, `notifications/${user.uid}/${id}`), { read: true });
-                li.classList.remove('unread');
-                unreadCount--;
-                notificationCount.textContent = unreadCount > 0 ? unreadCount : '';
+              update(ref(db, `notifications/${user.uid}/${id}`), { read: true });
+              li.classList.remove('unread');
+              unreadCount--;
+              notificationCount.textContent = unreadCount > 0 ? unreadCount : '';
             });
 
             list.appendChild(li);
-            });
+          });
 
-            notificationCount.textContent = unreadCount > 0 ? unreadCount : '';
+          notificationCount.textContent = unreadCount > 0 ? unreadCount : '';
         });
+
     });
     }
     loadNotifications();

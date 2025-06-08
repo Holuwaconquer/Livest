@@ -25,6 +25,54 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
 
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    if (localStorage.getItem("hasSeenIntro")) {
+      introJs().setOptions({
+      steps: [
+        {
+          intro: "Welcome to our Estatery Properties Marketplace, Let's show you around.!"
+        },
+        {
+          element: document.querySelector('.nav-bar'),
+          intro: "This is the navigation bar where you can explore options.",
+        },
+        {
+          element: document.getElementById('signUP'),
+          intro: "Use this button to create account and start uploading your properties",
+        },
+        {
+          element: document.querySelector('.search-bar'),
+          intro: "You can filter your properties choice with this section",
+        },
+        {
+          element: document.getElementById('mainPost'),
+          intro: "These are handpicked properties just for you.",
+        },
+        {
+          element: document.getElementById('aLandlord'),
+          intro: "Submit your email to subscribe to our newsletter and receive notifications on how you can make more income",
+        }
+      ],
+      tooltipClass: 'customTooltip',
+      highlightClass: 'customHighlight',
+      showStepNumbers: false,
+      showProgress: true,
+      scrollToElement: true,
+      scrollTo: 'tooltip',
+      exitOnOverlayClick: false,
+      nextLabel: 'Next',
+      prevLabel: 'Back',
+      doneLabel: 'Finish',
+      disableInteraction: true,
+    }).start();
+    
+      localStorage.setItem("hasSeenIntro", "true");
+    }
+  }, 1500); // 1.5s delay gives a smoother experience
+});
+
+
 // DOM elements
 const loggedCheck = document.getElementById('loggedCheck');
 const accountlog = document.querySelector('.accountlog');
@@ -38,6 +86,18 @@ document.getElementById("applicationForm").addEventListener("submit", async (e) 
   const phone = document.getElementById("applicantPhone").value.trim();
   const applicantEmail = document.getElementById("applicantEmail").value.trim();
   const message = document.getElementById("applicantMessage").value.trim();
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (applicantEmail && !emailRegex.test(applicantEmail)) {
+    alert("Please enter a valid email address.");
+    return;
+  }
+
+  const phoneRegex = /^\d{7,15}$/;
+  if (!phoneRegex.test(phone)) {
+    alert("Please enter a valid phone number.");
+    return;
+  }
 
   let postData;
   try {
@@ -76,7 +136,6 @@ document.getElementById("applicationForm").addEventListener("submit", async (e) 
     const appRef = push(ref(database, `applications/${userId}/${postId}`));
     await set(appRef, application);
 
-    // Notification payload
     const notification = {
       type: "new_application",
       message: `${name} has applied to your post.`,
@@ -88,11 +147,10 @@ document.getElementById("applicationForm").addEventListener("submit", async (e) 
       read: false
     };
     
-    // Push the notification to the owner's notification list
-    if (auth.currentUser) {
-      const notificationRef = push(ref(database, `notifications/${userId}`));
-      await set(notificationRef, notification);
-    }
+
+    const notificationRef = push(ref(database, `notifications/${userId}`));
+    await set(notificationRef, notification);
+
 
     alert("Application sent successfully!");
     document.getElementById('applicationModal').style.display = "none";
@@ -107,7 +165,7 @@ document.getElementById("applicationForm").addEventListener("submit", async (e) 
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // User signed in
+
     const [first] = user.displayName ? user.displayName.split(' ') : ["User"];
     const userRef = ref(database, `users/${user.uid}`);
 
@@ -116,10 +174,8 @@ onAuthStateChanged(auth, (user) => {
       const data = snapshot.val();
       const userPhotograph = data?.profilePicture || "https://via.placeholder.com/50"; // fallback image
       
-      // Hide login/signup links
       accountlog.style.display = "none";
 
-      // Show user photo dropdown
       loggedCheck.innerHTML = `
         <div style="position: relative; width: 50px; height: 50px; border-radius: 10px;">
           <div id="dropDownParent" style="width: 100%; cursor: pointer; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column;">
@@ -129,7 +185,6 @@ onAuthStateChanged(auth, (user) => {
         </div>
       `;
 
-      // Setup dropdown content
       div.innerHTML = `
         <div class="shadow py-2" style="width: 200px; position: absolute; border-radius: 4px; top: 75px; right: 0; background: white;">
           <p class="py-3 px-4">Hello <strong>${first}</strong></p>
@@ -141,22 +196,19 @@ onAuthStateChanged(auth, (user) => {
       div.classList.add('indexDropdown');
       div.style.display = "none";
 
-      // Toggle dropdown visibility on user photo click
       loggedCheck.addEventListener('click', () => {
         div.style.display = div.style.display === 'block' ? 'none' : 'block';
       });
 
-      // Hide dropdown if clicked outside
+ 
       document.addEventListener('click', (e) => {
         if (!loggedCheck.contains(e.target) && !div.contains(e.target)) {
           div.style.display = 'none';
         }
       });
 
-      // Logout button handler
       document.getElementById('logOutUser').addEventListener('click', () => {
         signOut(auth).then(() => {
-          // Refresh page to update UI after logout
           location.reload();
         }).catch((error) => {
           console.error("Logout error:", error);
@@ -164,99 +216,112 @@ onAuthStateChanged(auth, (user) => {
       });
     });
   } else {
-    // No user signed in - show login/signup links
-    accountlog.style.display = "flex"; // show the login/signup links
-    // Remove dropdown if present
+    accountlog.style.display = "flex";
     if (div.parentElement) {
       div.parentElement.removeChild(div);
     }
   }
 });
 
-// Add classes to login/signup buttons for styling (optional)
+
 if (accountlog.firstElementChild) accountlog.firstElementChild.classList.add('login');
 if (accountlog.lastElementChild) accountlog.lastElementChild.classList.add('sign');
 
-// Hamburger menu toggle
+
 const hamburgerIcon = document.getElementById('hamburgerIcon');
-const accountIcon = document.getElementById('accountIcon');
-const closeIcon = document.getElementById('closeIcon');
-const closeIcon2 = document.getElementById('closeIcon2');
-const centerSide = document.querySelector('.center-side');
-const rightSide = document.querySelector('.right-side');
+
+let menuOpen = false;
 
 hamburgerIcon.addEventListener('click', () => {
-  centerSide.classList.toggle('showMenu');
-});
+  const existingMenu = document.getElementById('hamburgerMenuDropdown');
 
-closeIcon.addEventListener('click', (e) => {
-  e.preventDefault();
-  centerSide.classList.remove('showMenu');
-});
+  if (menuOpen && existingMenu) {
+    existingMenu.remove();
+    hamburgerIcon.classList.remove('open');
+    menuOpen = false;
+  } else {
 
-accountIcon.addEventListener('click', () => {
-  rightSide.classList.add('showAccout');
-});
-
-closeIcon2.addEventListener('click', (e) => {
-  e.preventDefault();
-  rightSide.classList.remove('showAccout');
-});
-
-// Close menus when clicking outside
-document.addEventListener('click', (e) => {
-  if (centerSide.classList.contains('showMenu') && !centerSide.contains(e.target) && !hamburgerIcon.contains(e.target)) {
-    centerSide.classList.remove('showMenu');
+    const menuDropDown = document.createElement('div');
+    menuDropDown.id = 'hamburgerMenuDropdown';
+    menuDropDown.innerHTML = `
+      <div class="menuDropdown">
+        <div class="">
+          <ul>
+            <li><a href="">Home</a></li>
+            <li><a href="">Property</a></li>
+            <li><a href="">About</a></li>
+            <li><a href="">Contact Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <button onclick="location.href='login.html'" class="login">Log in</button>
+          <button onclick="location.href='signup.html'" class="sign">Join Now</button>
+        </div>
+      </div>
+    `;
+    const navBar = document.getElementById('nav-bar');
+    if (navBar) {
+      navBar.appendChild(menuDropDown);
+    }
+    hamburgerIcon.classList.add('open');
+    menuOpen = true;
   }
-  if (rightSide.classList.contains('showAccout') && !rightSide.contains(e.target) && !accountIcon.contains(e.target)) {
-    rightSide.classList.remove('showAccout');
-  }
 });
 
-// --- POSTS CODE ---
 
-const allPostsContainer = document.getElementById("allPosts");
+// POSTS CODE
+
+const allPostsContainer = document.getElementById("postContainer");
 
 function createPostCard(post) {
-  const div = document.createElement("div");
-  div.className = "postDiv col-md-4 mb-4";
+  const newdiv = document.createElement("div");
 
-  div.innerHTML = `
-    <div class="position-relative overflow-hidden card h-100 rounded-4">
-      <div class="imageDiv position-relative overflow-hidden">
-        <img src="${post.imageUrl || 'https://via.placeholder.com/300x200'}" class="card-img-top rounded-4" alt="${post.propertyName || 'Property'}">
-        <div class="viewPost d-flex justify-content-center align-items-center position-absolute rounded-4">
-          <button class="btn showPopOut">View Post</button>
-          <button 
-            class="btn sendAppBtn" 
-            data-post-id="${post.postId || post.id || ''}" 
-            data-owner-id="${post.userId || post.postedById || ''}"
-          >
-            Send Application
-          </button>
-
-        </div>
-      </div>
-      <div class="postMore w-100 py-2 px-1 d-flex position-absolute rounded-bottom-4 justify-content-between align-items-center">
-            <h6 class="card-text"><small>Posted by: ${post.postedBy || 'Anonymous'}</small></h6>
-            <h6 class="card-text"><small>Posted on: ${post.postedDate || 'Unknown'}</small></h6>
-      </div>
-      <div class="card-body">
-        <div>
-          <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-title"><strong>${post.propertyName || 'No Title'}</strong></h5>
-            <h5 class="card-title"><strong>&#8358;${post.propertyPrice || 'No Location'}</strong></h5>
+  newdiv.innerHTML = `
+    <div class="postBox position-relative">
+          <div class="riboon-container">
+            <div class="ribbon-badge">
+              <span class="icon">✨</span>
+              Rent
+            </div>
           </div>
-          <div>
-            <p class="card-text text-muted mb-3"><i class="fa-solid fa-location-dot"></i> ${post.propertyLocation || 'No Category'}</p>
-            ${post.propertyDesc ? post.propertyDesc.split(" ").slice(0, 20).join(" ") + (post.propertyDesc.split(" ").length > 20 ? "..." : "") : "No Description"}
+          <div class="postBoxImg">
+            <img src="${post.imageUrl || 'https://via.placeholder.com/300x200'}" alt="alt="${post.propertyName || 'Property'}"">
           </div>
+          <!-- post box content -->
+          <div class="postBox-Content">
+            <h3><strong>&#8358;${post.propertyPrice || 'No Location'}</strong></h3>
+            <h2>${post.propertyName || 'No Title'}</h2>
+            <p>${post.propertyLocation || 'No Category'}</p>
+            <div>
+              <i class="fa-regular fa-heart"></i>
+            </div>
+            <!-- postitemdetails  -->
+            <div class="postitemDetails d-flex py-3 w-100 justify-content-between align-items-center">
+              <div class="">
+                  <span>
+                      <img src="./assets/bed.png" alt="">
+                      <small>3</small>
+                  </span>
+              </div>
+              <div class="">
+                  <span>
+                      <img src="./assets/Icon.png" alt="">
+                      <small>4</small>
+                  </span>
+              </div>
+              <div class="">
+                  <span>
+                      <img src="./assets/Icon (1).png" alt="">
+                      <small>360m</small>
+                  </span>
+              </div>
+            </div>
+            <!-- end of postitem details -->
+          </div>
+          <!-- end of post box content -->
         </div>
-        </div>
-    </div>
-  `;
-
-  return div;
+  `
+  return newdiv;
 }
 
 function loadAllPosts() {
@@ -271,10 +336,9 @@ function loadAllPosts() {
       return;
     }
 
-    // Add postId to each post
     const postsArray = Object.entries(posts).map(([key, post]) => ({
       ...post,
-      postId: key, // This line is critical
+      postId: key,
     }));
 
     postsArray.forEach(post => {
@@ -310,7 +374,6 @@ function showPostModal(post) {
   document.getElementById('authorNo').textContent = post.authorPhone;
   document.getElementById('postImgMain').src = post.imageUrl;
 
-  // const postImgContainer  = document.getElementById('postImgContainer');
   postImg.innerHTML = ""; 
 
 if (Array.isArray(post.imageGallery)) {
@@ -345,6 +408,10 @@ if (Array.isArray(post.imageGallery)) {
   document.getElementById('propertyCategory').textContent = post.propertyCategory;
   document.getElementById('propertyPrice').innerHTML = `<p><strong>&#8358;${post.propertyPrice}</strong></p>`;
 
+   const button = document.getElementById("applyBtn");
+  button.setAttribute("data-post-id", post.postId || post.id || '');
+  button.setAttribute("data-owner-id", post.userId || post.postedById || '');
+  
   popOut.style.display = "flex";
 }
 
@@ -357,14 +424,14 @@ document.addEventListener("click", function (event) {
     const postIdRaw = event.target.getAttribute("data-post-id") || "";
     const userIdRaw = event.target.getAttribute("data-owner-id") || "";
 
-    // Trim values to avoid accidental spaces causing issues
+
     const postId = postIdRaw.trim();
     const userId = userIdRaw.trim();
 
-    // Debug output for values
+
     console.log("Setting appPostId with:", { postId, userId });
 
-    // Optional: Validate here before setting
+
     if (!isValidFirebaseKey(userId) || !isValidFirebaseKey(postId)) {
       alert("Invalid post or owner ID in button attributes.");
       return;
@@ -377,4 +444,67 @@ document.addEventListener("click", function (event) {
 
 document.getElementById("closeAppModal").addEventListener("click", () => {
   document.getElementById('applicationModal').style.display = "none";
+});
+
+const testimonials = [
+    { text: "“Estatery is the platform I go to on almost a daily basis for 2nd home and vacation condo shopping, or to just look at dream homes in new areas. Thanks for fun home shopping and comparative analyzing, Estatery!”.", img: "user1.jpg" },
+    { text: "Super easy to use, clean interface!", img: "user2.jpg" },
+    { text: "Fantastic support and powerful features.", img: "user3.jpg" }
+  ];
+
+  const displayTime = 5000; 
+  let currentIndex = 0;
+
+  const testimonialText = document.getElementById('testimonialText');
+  const userWrappers = document.querySelectorAll('.user-wrapper');
+  const progressCircles = document.querySelectorAll('.ring-progress');
+
+  function updateTestimonial(index) {
+
+    testimonialText.style.opacity = 0;
+    setTimeout(() => {
+      testimonialText.textContent = testimonials[index].text;
+      testimonialText.style.opacity = 1;
+      testimonialText.style.color = 'white';
+    }, 300);
+
+
+    progressCircles.forEach(circle => {
+      circle.style.transition = 'none';
+      circle.style.strokeDashoffset = 188.5;
+    });
+
+    const activeCircle = userWrappers[index].querySelector('.ring-progress');
+    setTimeout(() => {
+      activeCircle.style.transition = `stroke-dashoffset ${displayTime}ms linear`;
+      activeCircle.style.strokeDashoffset = 0;
+    }, 50);
+  }
+
+  function cycleTestimonials() {
+    currentIndex = (currentIndex + 1) % testimonials.length;
+    updateTestimonial(currentIndex);
+  }
+
+
+  userWrappers.forEach(wrapper => {
+    wrapper.addEventListener('click', () => {
+      const index = Number(wrapper.getAttribute('data-index'));
+      currentIndex = index;
+      updateTestimonial(index);
+    });
+  });
+
+
+  updateTestimonial(currentIndex);
+  setInterval(cycleTestimonials, displayTime);
+
+const navBar = document.querySelector('.nav-bar')
+window.addEventListener('scroll', function () {
+    if (window.scrollY > 200) {
+        navBar.classList.add('stickyNav')
+    }else{
+        navBar.classList.remove('stickyNav')
+
+    }
 });

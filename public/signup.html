@@ -19,64 +19,30 @@
     <link rel="stylesheet" href="index.css">
     <style>
       body{
-        padding: 0 8%;
         overflow-x: hidden;
         font-family: "Poppins", sans-serif;
-        font-style: normal;
       }
     </style>
 </head>
 <body>
-    <div class="d-flex justify-content-between align-items-center my-4 top-login-section">
-      <div class="left-login-side">
-        <h2 class="logo-login">livest</h2>
-      </div>
-      <div class="menu-side" style="font-size: 25px; display: none;">
-        <i id="hamburgerIcon" style="cursor: pointer; margin-right: 10px;" class="fa-solid fa-bars"></i>
-        <i id="accountIcon" class="fa-solid fa-right-from-bracket"></i>
-      </div>
-      <div class="center-login-side">
-        <div class="" style="font-size: 25px;">
-          <i id="closeIcon" style="cursor: pointer; margin-bottom: 20px;" class="fa-solid fa-xmark"></i>
-        </div>
-        <a href="">Home</a>
-        <a href="">Property</a>
-        <a href="">Loan <i class="fa-solid fa-caret-down"></i></a>
-        <a href="">About</a>
-        <a href="">Contact</a>
-      </div>
-      <div class="right-login-side" id="loggedCheck">
-        <i id="closeIcon2" style="cursor: pointer; margin-bottom: 20px;" class="fa-solid fa-xmark"></i>
-        <div class="accountlog">
-          <a href="login.html">Login</a>
-          <a data-bs-toggle="modal" data-bs-target="#staticBackdrop" href="">Join Now</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="loginTitle d-flex flex-column justify-content-center align-items-center my-5">
-      <div class="forBreadcumb bg-light rounded-5">
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Sign up</li>
-          </ol>
-        </nav>
-      </div>
-      <h1>Sign Up & grow your wealth</h1>
-    </div>
 
     <button id="resendVerification" style="display:none;" class="btn btn-warning">
       Resend Verification Email
     </button>
 
     <div class="loginForm">
-      <div class="row formRow align-items-center">
+      <div class="formRow">
         <!-- col-md 1 -->
-        <div class="col-md-6">
+        <div class="formSide">
           <!-- start of form -->
-          <div class="p-4 rounded-5 bg-light">
+          <div class="logo mb-5">
+            <a href="index.html">
+              <img src="./assets/Logotype.png" alt="">
+            </a>
+           </div>
+          <div class="formSide-content">
             <h3 class="mb-4">Sign up now</h3>
+            <p>Already have an account? <a href="login.html">Sign in</a></p>
             <div class="nameInput mb-3">
               <label class="form-label" for="userFname">First Name</label>
               <div class="input-group">
@@ -121,11 +87,6 @@
             </div>
             <div id="InvalidText5"></div>
             <button id="signUp" type="button" class="btn btn-login w-100 py-2 text-white my-4 text-center">Sign up</button>
-            <div class="loginWith d-flex justify-content-between align-items-center">
-              <div></div>
-              <p>Already have an account? <a href="login.html">Sign in</a></p>
-              <div></div>
-            </div>
             <div class="goApp d-flex text-center align-items-center justify-content-between">
               <button id="signGoogle" class="d-flex justify-content-center align-items-center w-50 btn"><img width="20" height="20" src="https://img.icons8.com/color/48/google-logo.png" alt="google-logo"/><span>Google</span></button>
               <button class="d-flex justify-content-center align-items-center w-50 btn w-50"><i class="fa-brands fa-apple"></i><span>Apple</span></button>
@@ -133,39 +94,32 @@
           </div>
           <!-- end of form -->
         </div>
-        <div style="height: 700px;" class="col-md-6 imgSide">
-        
+        <div class="imgSide">
+          <div class="eclipse position-absolute">
+            <img src="./assets/Ellipse 1.png" alt="">
+          </div>
+
+          <div class="illustration">
+            <div class="illustration-content d-flex flex-column align-items-center justify-content-center">
+              <div class="illustrate-card">
+                <h2>The new way to find your new home</h2>
+                <p>Find your dream place to live with more than 10k properties listed.</p>
+                <button>Browse Properties</button>
+              </div>
+              <div class="illustration-Txt">
+                <h3>Introducting New Features</h3>
+                <p>
+                  Analyzing previous trends ensures that businesses 
+                  always make the right decision. And as the scale of 
+                  the decision and it’s impact magnifies...
+                </p>
+                <a href="index.html">Explore</a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-
-
-<!-- Modal -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content py-3 px-4">
-      <div class="modal-header">
-        <h1></h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="top-text text-center my-3">
-        <h3>Welcome to Livest</h3>
-        <p>Our platform seamlessly connects real estate agents and 
-          property owners with serious buyers, making transactions faster, easier, and more efficient. Sign up today to
-          list, discover, and close deals effortlessly!
-        </p>
-      </div>
-      <h6>Register</h6>
-      <div class="goApp mt-3 d-flex text-center align-items-center justify-content-between">
-        <button class="d-flex justify-content-center align-items-center w-50 btn"><img width="20" height="20" src="https://img.icons8.com/color/48/google-logo.png" alt="google-logo"/><span>Google</span></button>
-        <button class="d-flex justify-content-center align-items-center w-50 btn w-50"><i class="fa-brands fa-apple"></i><span>Apple</span></button>
-      </div>
-      <button class="btn btn-login w-100 py-2 text-white my-4 text-center">Register via Email and Password</button>
-      <p class="text-center">Already have an account <a href="login.html">Sign in</a></p>
-      <small class="text-center">By continuing you agree to the Policy and Rules</small>
-    </div>
-  </div>
-</div>
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

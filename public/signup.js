@@ -23,9 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const provider = new GoogleAuthProvider();
 
   const resendBtn = document.getElementById('resendVerification');
-  let loggedCheck = document.getElementById('loggedCheck');
   let signGoogle = document.getElementById('signGoogle');
-  let accountlog = document.querySelector('.accountlog');
   signGoogle.addEventListener('click', () => {
     signInWithPopup(auth, provider)
       .then((userCredential) => {
@@ -51,8 +49,6 @@ document.addEventListener("DOMContentLoaded", () => {
   onAuthStateChanged(auth, (user) => {
     if (suppressRedirect) return;
     if (user) {
-      accountlog.style.display = "none";
-      loggedCheck.innerHTML = `<img style="width: 50px; height: 50px; border-radius: 50%;" src="${user.photoURL}">`;
       if (!user.emailVerified) {
         Swal.fire({
           icon: 'info',
@@ -94,10 +90,6 @@ document.addEventListener("DOMContentLoaded", () => {
     url: 'https://livest-real-estate.web.app/auth-action.html',
     handleCodeInApp: true
   };
-
-
-  accountlog.firstElementChild.classList.add('login');
-  accountlog.lastElementChild.classList.add('sign');
 
   let InvalidText5 = document.getElementById('InvalidText5');
   let userFname = document.getElementById('userFname');
@@ -237,35 +229,3 @@ eyecheck.addEventListener('click', () => {
   eyecheck.classList.toggle('fa-eye');
   eyecheck.classList.toggle('fa-eye-slash');
 });
-
-let hamburgerIcon = document.getElementById('hamburgerIcon')
-      let accountIcon = document.getElementById('accountIcon')
-      let closeIcon = document.getElementById('closeIcon')
-      let centerSide = document.querySelector('.center-login-side')
-      let rightSide = document.querySelector('.right-login-side')
-    hamburgerIcon.addEventListener('click', ()=>{
-      centerSide.classList.toggle('showMenu')
-    })
-    closeIcon.addEventListener('click', (e)=>{
-      e.preventDefault()
-      if(centerSide.classList.contains('showMenu')){
-        centerSide.classList.remove('showMenu')
-      }
-    })
-    accountIcon.addEventListener('click', ()=>{
-      rightSide.classList.add('showAccout')
-    })
-    document.getElementById('closeIcon2').addEventListener('click', (e)=>{
-      e.preventDefault()
-      if(rightSide.classList.contains('showAccout')){
-        rightSide.classList.remove('showAccout')
-      }
-    })
-    document.addEventListener('click', (e)=>{
-      if(centerSide.classList.contains('showMenu') && !centerSide.contains(e.target) && !hamburgerIcon.contains(e.target)){
-        centerSide.classList.remove('showMenu')
-      }
-      else if(rightSide.classList.contains('showAccout') && !rightSide.contains(e.target) && !accountIcon.contains(e.target)){
-        rightSide.classList.remove('showAccout')
-      }
-    })

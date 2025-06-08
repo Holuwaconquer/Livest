@@ -32,6 +32,8 @@
         </div>
     </div>
 
+    <h1>Unread Notifications</h1>
+  <ul id="unreadList"></ul>
 
     
 
@@ -78,6 +80,32 @@
             }else{  
                 location.href= "../login.html"
             }
+
+            const notificationsRef = ref(database, `notifications/${user.uid}`);
+      onValue(notificationsRef, (snapshot) => {
+        const notifications = snapshot.val();
+        unreadList.innerHTML = '';
+        
+        if (!notifications) {
+          unreadList.innerHTML = '<li>No notifications found.</li>';
+          return;
+        }
+
+        const unreadNotifications = Object.entries(notifications).filter(([id, notif]) => !notif.read);
+
+        if (unreadNotifications.length === 0) {
+          unreadList.innerHTML = '<li>No unread notifications.</li>';
+          return;
+        }
+
+        unreadNotifications.forEach(([id, notif]) => {
+          const li = document.createElement('li');
+          const sender = notif.name || 'System';
+          const message = notif.message || 'No message';
+          li.textContent = `${sender}: ${message}`;
+          unreadList.appendChild(li);
+        });
+      });
         })
 
     </script>

@@ -26,7 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const auth = getAuth(app);
 
   const loggedCheck = document.getElementById('loggedCheck');
-  const accountlog = document.querySelector('.accountlog');
   const InvalidText5 = document.getElementById('InvalidText5');
   const logInBtn = document.getElementById('logInBtn');
   // Check auth state & update UI
@@ -48,7 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
       location.href = "./client/clientdashboard.html";
     }
 
-    accountlog.style.display = "none";
     loggedCheck.innerHTML = `<img style="width: 50px; height: 50px; border-radius: 50%;" src="${user.photoURL || 'default-avatar.png'}" alt="User photo">`;
   } else {
     console.log("User is signed out.");
@@ -85,9 +83,6 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Error: " + error.message);
       });
   };
-  
-  accountlog.firstElementChild.classList.add('login');
-  accountlog.lastElementChild.classList.add('sign');
   
   logInBtn.addEventListener('click', () => {
     logInBtn.textContent = 'Logging in...';
@@ -198,42 +193,5 @@ eyecheck.addEventListener('click', () => {
 });
 
 
-  // Menu toggle handlers
-  const hamburgerIcon = document.getElementById('hamburgerIcon');
-  const accountIcon = document.getElementById('accountIcon');
-  const closeIcon = document.getElementById('closeIcon');
-  const closeIcon2 = document.getElementById('closeIcon2');
-  const centerSide = document.querySelector('.center-login-side');
-  const rightSide = document.querySelector('.right-login-side');
 
-  hamburgerIcon.addEventListener('click', () => {
-    centerSide.classList.toggle('showMenu');
-  });
-
-  closeIcon.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (centerSide.classList.contains('showMenu')) {
-      centerSide.classList.remove('showMenu');
-    }
-  });
-
-  accountIcon.addEventListener('click', () => {
-    rightSide.classList.add('showAccout');
-  });
-
-  closeIcon2.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (rightSide.classList.contains('showAccout')) {
-      rightSide.classList.remove('showAccout');
-    }
-  });
-
-  document.addEventListener('click', (e) => {
-    if (centerSide.classList.contains('showMenu') && !centerSide.contains(e.target) && !hamburgerIcon.contains(e.target)) {
-      centerSide.classList.remove('showMenu');
-    }
-    if (rightSide.classList.contains('showAccout') && !rightSide.contains(e.target) && !accountIcon.contains(e.target)) {
-      rightSide.classList.remove('showAccout');
-    }
-  });
 });
