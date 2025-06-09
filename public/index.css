@@ -73,6 +73,12 @@ body{
   overflow-x: hidden;
   font-weight: normal;
 }
+.pageLogo:hover{
+  scale: 1.02;
+  transition: all 0.2s ease-in-out;
+  filter: saturate(6);
+  cursor: pointer;
+}
 .nav-bar{
   width: 100vw;
   padding: 15px 8%;
@@ -95,6 +101,11 @@ body{
   display: flex;
   gap: 1em;
   font-weight: 500;
+
+  a:hover{
+    color: var(--dark-color);
+    transition: 0.2s ease-in-out;
+  }
 }
 .nums span{
   border-left: 1px solid var(--light-color);
@@ -146,7 +157,27 @@ body{
   top: 40px;
   left: 30px;
   z-index: 2;
+  animation: mapBx 3s linear infinite;
 }
+.mapBox:hover, .mapBox2:hover{
+  cursor: pointer;
+  animation-play-state: paused;
+}
+@keyframes mapBx {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+  70%{
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
 .mapBox h3 strong{
   color: var(--dark-color);
   font-weight: bold;
@@ -174,6 +205,8 @@ body{
   right: 20px !important;
   background-color: white;
   border-radius: 4px;
+  animation: mapBx 3s linear infinite;
+  animation-direction: reverse;
 }
 .mapBox-Content, .mapBox2-Content{
   padding: 15px;
@@ -444,8 +477,30 @@ select.form-control {
   color: var(--paragraph-color);
   width: 100%;
 }
+.landlord-form input:focus{
+  outline: none;
+  border: 2px solid var(--primary-color);
+  animation: bordered 1s linear infinite;
+}
+@keyframes bordered {
+  0%{
+    border: 2px solid var(--primary-color);
+  }
+  50%{
+    border: 2px solid orangered;
+  }
+  100%{
+    border: 2px solid var(--light-bg);
+  }
+  70%{
+    border: 2px solid orangered;
+  }
+  100%{
+    border: 2px solid var(--paragraph-color);
+  }
+}
 .landlord-form button{
-  top: 7px;
+  top: 8px;
   right: 3%;
   border: none;
   color: white;
@@ -603,11 +658,11 @@ select.form-control {
 /* sticky nav */
 .stickyNav{
   background-color: rgba(255, 255, 255, 0.8);
-  color: var(--secondary-color) !important;
+  color: var(--paragraph-color) !important;
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 100000;
+  z-index: 1000000000000000000;
   padding: 15px 5%;
   backdrop-filter: blur(3px);
   transition: all 0.3s ease-in-out;
@@ -635,6 +690,10 @@ footer li{
 footer a{
     text-decoration: none;
     color: var(--paragraph-color);
+}
+footer a:hover{
+    color: var(--primary-color);
+    transition: 0.2s ease-in-out;
 }
 footer i{
   color: var(--paragraph-color);
@@ -753,9 +812,11 @@ footer i{
   background-color: white;
   border-radius: 4px;
   cursor: pointer;
+  transition: 0.2s ease-in-out;
 }
 .postBox:hover{
-  scale: 1.01;
+  scale: 1.03;
+  box-shadow: 0px 0px 10px 5px #eaeafa;
 }
 .postBox-Content h3 strong{
   color: var(--dark-color);
@@ -809,6 +870,9 @@ footer i{
     color: white !important;
   }
 }
+.testimony-header h1{
+  color: white;
+}
 /* testimonial styles */
 .testimonial-wrapper {
   text-align: center;
@@ -817,7 +881,7 @@ footer i{
 
 .testimonial-text {
   font-size: 1.25rem;
-  margin-bottom: 2rem;
+  margin-bottom: 0.3rem;
   min-height: 100px;
   transition: opacity 0.3s ease;
 }
@@ -1058,7 +1122,7 @@ footer i{
 }
 .indexDropdown div p:hover, 
 .indexDropdown div button:hover{
-  background-color: #71be4763 !important;
+  background-color: var(--hero-bg) !important;
 }
 
 .modalOverlay {

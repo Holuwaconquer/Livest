@@ -13,7 +13,6 @@ const firebaseConfig = {
   messagingSenderId: "647434805745",
   appId: "1:647434805745:web:610c262a9968a1a6ac2450"
 };
-// Helper to validate Firebase keys (no ".", "#", "$", "[", or "]" and non-empty)
 function isValidFirebaseKey(key) {
   if (typeof key !== 'string' || key.length === 0) return false;
   const invalidChars = ['.', '#', '$', '[', ']'];
@@ -25,9 +24,15 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
 
+document.querySelectorAll('.pageLogo').forEach(clicked =>{
+  clicked.addEventListener('click', ()=>{
+    location.href = 'index.html'
+  })
+})
+
 window.addEventListener('load', () => {
   setTimeout(() => {
-    if (localStorage.getItem("hasSeenIntro")) {
+    if (!localStorage.getItem("hasSeenIntro")) {
       introJs().setOptions({
       steps: [
         {
@@ -165,7 +170,7 @@ document.getElementById("applicationForm").addEventListener("submit", async (e) 
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
-
+    accountlog.innerHTML = ""
     const [first] = user.displayName ? user.displayName.split(' ') : ["User"];
     const userRef = ref(database, `users/${user.uid}`);
 
@@ -174,7 +179,7 @@ onAuthStateChanged(auth, (user) => {
       const data = snapshot.val();
       const userPhotograph = data?.profilePicture || "https://via.placeholder.com/50"; // fallback image
       
-      accountlog.style.display = "none";
+      // accountlog.style.display = "none";
 
       loggedCheck.innerHTML = `
         <div style="position: relative; width: 50px; height: 50px; border-radius: 10px;">
@@ -231,7 +236,7 @@ if (accountlog.lastElementChild) accountlog.lastElementChild.classList.add('sign
 const hamburgerIcon = document.getElementById('hamburgerIcon');
 
 let menuOpen = false;
-
+const navBar = document.getElementById('nav-bar');
 hamburgerIcon.addEventListener('click', () => {
   const existingMenu = document.getElementById('hamburgerMenuDropdown');
 
@@ -259,7 +264,7 @@ hamburgerIcon.addEventListener('click', () => {
         </div>
       </div>
     `;
-    const navBar = document.getElementById('nav-bar');
+    
     if (navBar) {
       navBar.appendChild(menuDropDown);
     }
@@ -285,7 +290,7 @@ function createPostCard(post) {
             </div>
           </div>
           <div class="postBoxImg">
-            <img src="${post.imageUrl || 'https://via.placeholder.com/300x200'}" alt="alt="${post.propertyName || 'Property'}"">
+            <img src="${post.imageUrl || 'https://via.placeholder.com/300x200'}" alt="${post.propertyName || 'Property'}">
           </div>
           <!-- post box content -->
           <div class="postBox-Content">
@@ -447,27 +452,34 @@ document.getElementById("closeAppModal").addEventListener("click", () => {
 });
 
 const testimonials = [
-    { text: "“Estatery is the platform I go to on almost a daily basis for 2nd home and vacation condo shopping, or to just look at dream homes in new areas. Thanks for fun home shopping and comparative analyzing, Estatery!”.", img: "user1.jpg" },
-    { text: "Super easy to use, clean interface!", img: "user2.jpg" },
-    { text: "Fantastic support and powerful features.", img: "user3.jpg" }
+    { text: "“Estatery is the platform I go to on almost a daily basis for 2nd home and vacation condo shopping, or to just look at dream homes in new areas. Thanks for fun home shopping and comparative analyzing, Estatery!”.", img: "./assets/ladyPic.png", author: "Mary Beth" },
+    { text: "Super easy to use, clean interface!", img: "./assets/guy1.png", author: "John Doe" },
+    { text: "Fantastic support and powerful features.", img: "./assets/ladyPic.png", author: "Dan Steve" }
   ];
 
   const displayTime = 5000; 
   let currentIndex = 0;
 
   const testimonialText = document.getElementById('testimonialText');
+  const testimonialAuthor = document.getElementById('testimonialAuthor');
   const userWrappers = document.querySelectorAll('.user-wrapper');
   const progressCircles = document.querySelectorAll('.ring-progress');
 
   function updateTestimonial(index) {
 
     testimonialText.style.opacity = 0;
+    testimonialAuthor.style.opacity = 0;
     setTimeout(() => {
       testimonialText.textContent = testimonials[index].text;
+      testimonialAuthor.textContent = testimonials[index].author;
       testimonialText.style.opacity = 1;
+      testimonialAuthor.style.opacity = 1;
       testimonialText.style.color = 'white';
+      testimonialAuthor.style.color = 'white';
     }, 300);
 
+    
+    userWrappers[index].querySelector('.user-img').src = testimonials[index].img
 
     progressCircles.forEach(circle => {
       circle.style.transition = 'none';
@@ -499,12 +511,13 @@ const testimonials = [
   updateTestimonial(currentIndex);
   setInterval(cycleTestimonials, displayTime);
 
-const navBar = document.querySelector('.nav-bar')
-window.addEventListener('scroll', function () {
-    if (window.scrollY > 200) {
+document.addEventListener("DOMContentLoaded", () => {
+  window.addEventListener('scroll', function () {
+    console.log("Scroll Y:", window.scrollY);
+    if (window.scrollY > 300) {
         navBar.classList.add('stickyNav')
-    }else{
+    } else {
         navBar.classList.remove('stickyNav')
-
     }
+  });
 });
