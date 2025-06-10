@@ -16,6 +16,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bungee+Tint&family=Oswald:wght@200..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
   <script src="https://kit.fontawesome.com/e943f317aa.js" crossorigin="anonymous"></script>
   <link href="https://unpkg.com/intro.js/minified/introjs.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 </head>
 <body>
   <div id="nav-bar" data-aos-duration="1000" data-aos="fade-down" class="nav-bar position-relative">
@@ -428,7 +429,7 @@
       </div>
       <div data-aos="fade-right"
      data-aos-duration="800">
-        <input class="px-3 py-2 form-control" type="text" placeholder="Search...">
+        <button id="toggleFavoritesBtn">Show Favorites</button>
       </div>
     </div>
 
@@ -648,7 +649,7 @@
     <div class="popOut">
     <button id="closeBtn" class="closeBtn">&times;</button>
     <div class="FormDiv">
-      <div class="firstTop row justify-content-between align-items-center">
+      <div class="firstTop row gap-lg-0 gap-md-0 gap-2 justify-content-between align-items-center">
         <div class="firstTopImg col-12 col-md-8">
           <img id="postImgMain" src="./assets/pexels-expect-best-79873-323772.jpg" alt="">
           <div id="postImg"></div>
@@ -670,16 +671,15 @@
               </div>
             </div>
           </div>
-          <button class="btn sendAppBtn" id="applyBtn">Send Application</button>
         </div>
       </div>
 
       <!-- bottom section -->
        <div>
         <div>
-          <div class="detailsRow row gap-2">
+          <div class="detailsRow row justify-content-center align-items-center justify-content-lg-start gap-2">
             <!-- first -->
-            <div class="col-md-3 d-flex justify-content-center align-items-center px-2">
+            <div class="col-12 col-lg-3 col-md-3 d-flex justify-content-center align-items-center px-2">
               <i class="fa-solid fa-location-dot me-2"></i>
               <div>
                 <small>Location</small>
@@ -687,7 +687,7 @@
               </div>
             </div>
             <!-- second -->
-            <div class="col-md-3 d-flex justify-content-center align-items-center px-2">
+            <div class="col-12 col-lg-3 col-md-3 d-flex justify-content-center align-items-center px-2">
               <i class="fa-solid fa-location-dot me-2"></i>
               <div>
                 <small>Property Type</small>
@@ -695,16 +695,16 @@
               </div>
             </div>
             <!-- third -->
-            <div class="col-md-3 d-flex justify-content-center align-items-center px-2">
+            <div class="col-12 col-lg-3 col-md-3 d-flex justify-content-center align-items-center px-2">
               <div>
                 <small>Price</small>
                 <p id="propertyPrice"></p>
               </div>
             </div>
             <!-- fourth -->
-            <div class="col-md-2 d-flex justify-content-center align-items-center px-2">
+            <div class="col-12 col-lg-2 col-md-2 d-flex justify-content-center align-items-center px-2">
               <div class="w-100">
-                <button class="viewMore">View More</button>
+                <button class="sendAppBtn" id="applyBtn">Send Application</button>
               </div>
             </div>
           </div>

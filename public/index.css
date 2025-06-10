@@ -508,6 +508,13 @@ select.form-control {
   padding: 12px 25px;
   border-radius: 10px;
 }
+#toggleFavoritesBtn{
+  border: none;
+  color: white;
+  background-color: var(--primary-color);
+  padding: 12px 25px;
+  border-radius: 4px;
+}
 .riboon-container{
   position: absolute;
   top: 40%;
@@ -891,7 +898,11 @@ footer i{
   justify-content: center;
   gap: 1.5rem;
 }
-
+#testimonialText,
+#testimonialAuthor {
+  color: var(--light-color); /* or your desired text color */
+  transition: opacity 0.3s;
+}
 .user-wrapper {
   position: relative;
   width: 70px;
@@ -1178,32 +1189,32 @@ footer i{
   border-radius: 10px;
 }
 .secondTop{
-  background-color: #ace98b75;
+  background-color: var(--light-bg);
   backdrop-filter: blur(5px);
   border-radius: 10px;
   width: 100%;
   height: 100%;
   padding: 20px;
+  overflow-y: auto;
 }
 .detailsRow{
   padding: 1% 2%;
 }
 .detailsRow > div{
   box-sizing: border-box;
-  border: 1px solid #2f7708;
+  border: 1px solid var(--primary-color);
   border-radius: 50px;
 }
 .detailsRow > div:last-child{
   border: none;
 }
-.secondTop button{
+.sendAppBtn{
   border: none;
-  background-color: #2f7708;
+  background-color: var(--primary-color);
   color: white;
   border-radius: 50px;
   width: 100%;
   padding: 10px;
-  margin-top: 15px;
 }
 .closeBtn {
   position: absolute;
@@ -1216,14 +1227,7 @@ footer i{
   cursor: pointer;
   z-index: 1000001;
 }
-.viewMore{
-  border: none;
-  background-color: #000000;
-  width: 100%;
-  border-radius: 50px;
-  color: white;
-  padding: 15px 40px;
-}
+
 #postImg{
   position: absolute;
   bottom: 10px;
@@ -1261,6 +1265,22 @@ footer i{
 @media screen and (max-width: 700px) {
   html,body{
     overflow-x: hidden !important;
+  }
+  .popOut {
+    width: 90vw;
+    height: auto !important;
+    z-index: 10000000000;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    overflow-y: hidden !important;
+    overflow-x: hidden;
+    padding: 2%;
+  }
+  .FormDiv{
+
+  }
+  .firstTop{
+    height: 50%;
   }
   .centerNav, .rightNav{
     display: none !important;
@@ -1510,16 +1530,6 @@ footer i{
     align-items: center;
     text-align: center;
   }
-  /* footer{
-    display: block !important;
-    background-color: red;
-    background-color: white;
-    color: var(--paragraph-color);
-    width: 100%;
-    justify-content: center !important;
-    padding: 5% 12% 10%;
-    border-top: 1px solid #99999980;
-  } */
    body footer {
     display: block !important;
     background-color: white;
