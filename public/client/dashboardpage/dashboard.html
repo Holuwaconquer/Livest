@@ -3,37 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>DASHBOARD | ESTATERY REAL ESTATE MARKETPLACE</title>
     <link rel="stylesheet" href="../client.css">
     <script src="https://kit.fontawesome.com/e943f317aa.js" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="../client.js"></script>
 </head>
 <body>
-    <h5>Welcome <span id="userName"></span></h5>
+    <h5>Welcome Back,<span id="userName"></span></h5>
 
     <div class="mt-5 w-100">
-        <div class="dashboardDiv d-flex justify-content-between align-items-center gap-1 w-100">
-            <div id="gotoList" class="col-md-4 d-flex flex-column align-items-center justify-content-center listings border py-4">
-                <i class="fa-solid fs-3 fa-table-columns"></i>
-                <h4>My Listings</h4>
-                <p class=""><small>Add, Edit, or Delete your listings</small></p>
+        <div class="dashboardDiv d-flex flex-wrap justify-content-between align-items-center gap-1 w-100">
+            <div id="gotoList" class="d-flex mb-3 flex-column listings border rounded-4 px-4 py-1">
+                <div class="d-flex flex-column gap-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h1>11</h1>
+                        <div class="dashSvg"></div>
+                    </div>
+                    <div>
+                        <p>Property Listed</p>
+                    </div>
+                </div>    
             </div>
-            <div id="gotoApp" class="col-md-4 d-flex flex-column align-items-center justify-content-center listings border py-4">
-                <i class="fa-solid fs-3 fa-table-columns"></i>
-                <h4>Applications</h4>
-                <p class=""><small>View Application sent by buyers</small></p>
+
+            <div id="gotoList" class="d-flex mb-3 flex-column listings border rounded-4 px-4 py-1">
+                <div class="d-flex flex-column gap-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h1>11</h1>
+                        <div class="dashSvg"></div>
+                    </div>
+                    <div>
+                        <p>Total Application Received</p>
+                    </div>
+                </div>    
             </div>
-            <div id="gotoProfile" class="col-md-4 d-flex flex-column align-items-center justify-content-center listings border py-4">
-                <i class="fa-solid fs-3 fa-table-columns"></i>
-                <h4>My Profile</h4>
-                <p class=""><small>Add, Edit, or Delete your listings</small></p>
+
+            <div id="gotoList" class="d-flex mb-3 flex-column listings border rounded-4 px-4 py-1">
+                <div class="d-flex flex-column gap-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h1>11</h1>
+                        <div class="dashSvg"></div>
+                    </div>
+                    <div>
+                        <p>Total Application Sent</p>
+                    </div>
+                </div>    
+            </div>
+
+            <div id="gotoList" class="d-flex mb-3 flex-column listings border rounded-4 px-4 py-1">
+                <div class="d-flex flex-column gap-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h1>11</h1>
+                        <div class="dashSvg"></div>
+                    </div>
+                    <div>
+                        <p>Client Feedback</p>
+                    </div>
+                </div>    
+            </div>
+
+            <div id="gotoList" class="d-flex mb-3 flex-column listings border rounded-4 px-4 py-1">
+                <div class="d-flex flex-column gap-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h1>11</h1>
+                        <div class="dashSvg"></div>
+                    </div>
+                    <div>
+                        <p>New Notification</p>
+                    </div>
+                </div>    
+            </div>
+
+            <div id="gotoList" class="d-flex mb-3 flex-column listings border rounded-4 px-4 py-1">
+                <div class="d-flex flex-column gap-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h1>11</h1>
+                        <div class="dashSvg"></div>
+                    </div>
+                    <div>
+                        <p>New Application Received</p>
+                    </div>
+                </div>    
             </div>
         </div>
     </div>
 
+    <div id="newMessage" class="border rounded-4 py-3 px-4">
+        <h3>New Application Received</h3>
+        <div id="applicationContainer"></div>
+    </div>
     <h1>Unread Notifications</h1>
-  <ul id="unreadList"></ul>
+    <ul id="unreadList"></ul>
 
     
 
@@ -81,31 +141,167 @@
                 location.href= "../login.html"
             }
 
-            const notificationsRef = ref(database, `notifications/${user.uid}`);
-      onValue(notificationsRef, (snapshot) => {
-        const notifications = snapshot.val();
-        unreadList.innerHTML = '';
-        
-        if (!notifications) {
-          unreadList.innerHTML = '<li>No notifications found.</li>';
+            const appsPerPage = 2;
+            let currentPage = 1;
+            let allApplications = [];
+            function renderApplications(){
+
+                const container = document.getElementById("applicationContainer");
+                container.innerHTML = "";
+
+                if (allApplications.length === 0) {
+                    container.innerHTML = "<p>No New Applications found.</p>";
+                    return;
+                }
+                const start = (currentPage - 1) * appsPerPage;
+                const end = start + appsPerPage;
+                const pageData = allApplications.slice(start, end);
+
+                pageData.forEach(({ userId, postId, appId, appData}) =>{
+                    const date = appData.date ? new Date(appData.date).toLocaleString(): "Unknown date";
+
+                    const appCard =  document.createElement('div');
+                    appCard.style.borderBottom = '1px solid #7065F0'
+                    appCard.className = "mb-3 py-2"
+                    appCard.innerHTML = `
+                        <button style="border-radius: 30px; background-color: #DEDEF7; border: none; padding: 10px 25px; text-align: center" class="approveBtn">Approve</button>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4>Post: ${postId}</h4>    
+                            <p class="text-muted"><strong>Date:</strong> ${date}</p>
+                        </div>
+                        <p><strong>Name:</strong> ${appData.name || "N/A"}</p>
+                            <p><strong>Message:</strong> ${appData.message || "No message provided"}</p>
+                            <p><strong>Email:</strong> ${appData.applicantEmail || "N/A"}</p>
+                            <p><strong>Phone:</strong> ${appData.phone || "N/A"}</p>
+                            <p><strong>Status:</strong> 
+                                <span class="status-badge ${appData.status === "Approved" ? "status-approved" : ""}">
+                                ${appData.status || "Pending"}
+                                </span>
+                            </p>
+                            <div class="">
+                                <button style="border-radius: 30px; background-color: #DEDEF7; border: none; padding: 10px 25px; text-align: center" class="deleteBtn">Delete</button>
+                            </div>
+                            `;
+
+                            appCard.querySelector('.approveBtn').addEventListener('click', ()=>{
+                                const appRef = ref(database, `applications/${userId}/${postId}/${appId}`);
+                                update(appRef, { status: "Approved" })
+                                .then(() => {
+                                    alert("Application approved.");
+                                    if (appData.applicantEmail) {
+                                    emailjs.send("service_ls8xng9", "template_qexoeli", {
+                                        to_name: appData.name || "User",
+                                        to_email: appData.applicantEmail,
+                                        message: `Hi ${appData.name || "there"}, your application for Post ${postId} has been approved!`,
+                                    })
+                                    .then(() => {
+                                        alert("Approval email sent to " + appData.applicantEmail);
+                                    })
+                                    .catch((err) => {
+                                        console.error("EmailJS error:", err);
+                                        alert("Failed to send approval email.");
+                                    });
+                                    } else {
+                                    alert("No email address available to send approval notification.");
+                                    }
+                                })
+                                .catch((err) => {
+                                    console.error("Approval error:", err);
+                                });
+                            })
+
+                            appCard.querySelector(".deleteBtn").addEventListener("click", () => {
+                            const appRef = ref(database, `applications/${userId}/${postId}/${appId}`);
+                                if (confirm("Are you sure you want to delete this application?")) {
+                                    remove(appRef)
+                                    .then(() => alert("Application deleted."))
+                                    .catch((err) => console.error("Deletion error:", err));
+                                }
+                            });
+                            container.appendChild(appCard);
+                });
+                renderPaginationControls();
+            }
+
+            function renderPaginationControls() {
+                const controls = document.getElementById("paginationControls");
+                const totalPages = Math.ceil(allApplications.length / appsPerPage);
+
+                controls.innerHTML = `
+                    <button class="pagination-btn" ${currentPage === 1 ? "disabled" : ""} id="prevBtn">Previous</button>
+                    <span>Page ${currentPage} of ${totalPages}</span>
+                    <button class="pagination-btn" ${currentPage === totalPages ? "disabled" : ""} id="nextBtn">Next</button>
+                `;
+
+                document.getElementById("prevBtn").addEventListener("click", () => {
+                    currentPage--;
+                    renderApplications();
+                });
+
+                document.getElementById("nextBtn").addEventListener("click", () => {
+                    currentPage++;
+                    renderApplications();
+                });
+            }
+
+            function loadApplications() {
+      onAuthStateChanged(auth, (user) => {
+        if (!user) {
+          document.getElementById("applicationContainer").innerHTML = "<p>Please sign in to view your applications.</p>";
           return;
         }
 
-        const unreadNotifications = Object.entries(notifications).filter(([id, notif]) => !notif.read);
+        const uid = user.uid;
+        const applicationsRef = ref(database, `applications/${uid}`);
 
-        if (unreadNotifications.length === 0) {
-          unreadList.innerHTML = '<li>No unread notifications.</li>';
-          return;
-        }
+        onValue(applicationsRef, (snapshot) => {
+          const data = snapshot.val();
+          allApplications = [];
 
-        unreadNotifications.forEach(([id, notif]) => {
-          const li = document.createElement('li');
-          const sender = notif.name || 'System';
-          const message = notif.message || 'No message';
-          li.textContent = `${sender}: ${message}`;
-          unreadList.appendChild(li);
+          if (data) {
+            Object.entries(data).forEach(([postId, apps]) => {
+              Object.entries(apps).forEach(([appId, appData]) => {
+                allApplications.push({ userId: uid, postId, appId, appData });
+              });
+            });
+          }
+
+          currentPage = 1;
+          renderApplications();
+        }, (error) => {
+          console.error("Firebase read error:", error);
+          document.getElementById("applicationContainer").innerHTML = "<p>Error loading applications.</p>";
         });
       });
+    }
+
+    loadApplications();
+
+            const notificationsRef = ref(database, `notifications/${user.uid}`);
+            onValue(notificationsRef, (snapshot) => {
+                const notifications = snapshot.val();
+                unreadList.innerHTML = '';
+                
+                if (!notifications) {
+                unreadList.innerHTML = '<li>No notifications found.</li>';
+                return;
+                }
+
+                const unreadNotifications = Object.entries(notifications).filter(([id, notif]) => !notif.read);
+                
+                if (unreadNotifications.length === 0) {
+                    unreadList.innerHTML = '<li>No unread notifications.</li>';
+                    return;
+                }
+
+                unreadNotifications.forEach(([id, notif]) => {
+                const li = document.createElement('li');
+                const sender = notif.name || 'System';
+                const message = notif.message || 'No message';
+                li.textContent = `${sender}: ${message}`;
+                unreadList.appendChild(li);
+                });
+            });
         })
 
     </script>

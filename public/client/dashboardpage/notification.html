@@ -3,16 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Notification</title>
+  <title>NOTIFICATION</title>
   <style>
     #notificationList {
-      position: absolute;
-      top: 40px;
-      left: 10px;
+      position: relative;
       background: white;
       border: 1px solid #ccc;
       width: 100%;
-      max-height: 400px;
       overflow-y: auto;
       display: none;
       list-style: none;
@@ -35,26 +32,26 @@
     }
 
     #notificationList li.notification-item {
-  padding: 12px;
-  border-bottom: 1px solid #eee;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
 
-#notificationList li.unread {
-  background-color: #f0f8ff;
-  font-weight: bold;
-}
+    #notificationList li.unread {
+      background-color: #f0f8ff;
+      font-weight: bold;
+    }
 
-#notificationList li strong {
-  font-size: 14px;
-}
+    #notificationList li strong {
+      font-size: 14px;
+    }
 
-#notificationList li small {
-  font-size: 12px;
-  color: gray;
-}
+    #notificationList li small {
+      font-size: 12px;
+      color: gray;
+    }
 
   </style>
 </head>
@@ -138,6 +135,7 @@
                 <strong>${sender}</strong>
                 <span>${message}</span>
                 <small style="color: gray;">${time}</small>
+                <small>click to mark as read</small>
               </div>
             `;
 

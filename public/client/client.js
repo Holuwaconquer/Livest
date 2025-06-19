@@ -1,5 +1,5 @@
-import Swal from 'https://cdn.skypack.dev/sweetalert2';
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
+  import Swal from 'https://cdn.skypack.dev/sweetalert2';
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
   import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-database.js";
 
@@ -58,6 +58,58 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebas
     if (logUserOutBtn) logUserOutBtn.addEventListener('click', logOut);
   });
 
+window.addEventListener('load', () => {
+  if (localStorage.getItem("newhasSeenIntro")) return;
+  const menuLinks = document.querySelectorAll('.menu li');
+  const steps = [
+    {
+      intro: "Hello, Welcome to your dashboard, Let's show you how to walk your way around.!"
+    },
+    {
+      element: document.getElementById('dropDown'),
+      intro: "This is a dropdown down menu which you can use to navigate to your profile and the homepage of this appliation"
+    }
+  ];
+  menuLinks.forEach((link, index) => {
+    steps.push({
+      element: link,
+      intro: getStepDescription(index) // Function to get appropriate description for each step
+    });
+  });
+
+  setTimeout(() => {
+    introJs().setOptions({
+      steps: steps,
+      tooltipClass: 'customTooltip',
+      highlightClass: 'customHighlight',
+      showStepNumbers: false,
+      showProgress: true,
+      scrollToElement: true,
+      scrollTo: 'tooltip',
+      exitOnOverlayClick: false,
+      nextLabel: 'Next',
+      prevLabel: 'Back',
+      doneLabel: 'Finish',
+      disableInteraction: true,
+    }).start();
+    
+    localStorage.setItem("newhasSeenIntro", "true");
+  }, 1500);
+})
+function getStepDescription(index) {
+  const descriptions = [
+    "This is the dashboard page where you can see your account overview",
+    "This is the page where you can post, view delete and edit your properties",
+    "This is the page where you can see applications sent by client interested in your properties",
+    "This is your profile page, where you can edit your profile",
+    "This is your notification page, where you can see lists of notification you got",
+    "This is your seetings page, where you can modified any settings you want.",
+    "Click on this to log out of your account."
+  ];
+  
+  return descriptions[index] || "This is an important section of your dashboard";
+}
+
   // Auth state observer
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -82,6 +134,21 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebas
     } else {
       location.href = "../login.html";
     }
+
+
+    const notificationsRef = ref(database, `notifications/${user.uid}`);
+    const notifLabel = document.getElementById('notifLabel')  
+    onValue(notificationsRef, (snapshot) => {
+          const notifications = snapshot.val();
+          const unreadNotifications = Object.entries(notifications).filter(([id, notif]) => !notif.read);
+          
+          if (unreadNotifications.length === 0) {
+            notifLabel.textContent = '';
+            return;
+          }else{
+            notifLabel.textContent = unreadNotifications.length;
+          }
+      });
   });
 
   // Menu toggle and outside click handler
@@ -116,7 +183,6 @@ const tooltipLabels = [
   "Dashboard",
   "Property",
   "Order",
-  "Message",
   "Profile",
   "Notification",
   "Settings",
@@ -222,3 +288,6 @@ document.addEventListener('click', e => {
     dropDown.classList.remove('show');
   }
 });
+document.querySelector('.newNot').addEventListener('click', (e)=>{
+  loadPage(document.querySelector('.newNot').getAttribute('data-page'));
+})

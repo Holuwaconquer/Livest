@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LIVEST | REAL ESTATE MARKETPLACE</title>
+  <title>ESTATERY | REAL ESTATE MARKETPLACE</title>
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon-16x16.png">
@@ -14,12 +14,43 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bungee+Tint&family=Oswald:wght@200..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-  <script src="https://kit.fontawesome.com/e943f317aa.js" crossorigin="anonymous"></script>
   <link href="https://unpkg.com/intro.js/minified/introjs.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 </head>
 <body>
-  <div id="nav-bar" data-aos-duration="1000" data-aos="fade-down" class="nav-bar position-relative">
+
+  <!-- loader -->
+   <div id="loads" class="loads">
+
+     <div class="boxes">
+         <div class="box">
+             <div></div>
+             <div></div>
+             <div></div>
+             <div></div>
+         </div>
+         <div class="box">
+             <div></div>
+             <div></div>
+             <div></div>
+             <div></div>
+         </div>
+         <div class="box">
+             <div></div>
+             <div></div>
+             <div></div>
+             <div></div>
+         </div>
+         <div class="box">
+             <div></div>
+             <div></div>
+             <div></div>
+             <div></div>
+         </div>
+     </div>
+   </div>
+<!-- end of loader -->
+
+  <div id="nav-bar" data-aos-duration="1000" data-aos="fade-down" class="nav-bar">
     <div class="nav-bar-div">
       <div class="leftNav">
         <img class="pageLogo" src="./assets/Logotype.png" alt="">
@@ -28,8 +59,8 @@
         <div id="hamburgerIcon"></div>
       </div>
       <div class="centerNav">
-        <a href="">Home</a>
-        <a href="">Property</a>
+        <a href="#">Home</a>
+        <a href="allPost.html">Property</a>
         <a href="">About</a>
         <a href="">Contact Us</a>
       </div>
@@ -107,7 +138,7 @@
                         role="tab"
                         aria-selected="false"
                     >
-                        Sell
+                        Lease
                     </button>
                 </li>
             </ul>
@@ -121,51 +152,47 @@
                                 <div class="row">
                                     <div class="col-md-6 col-lg-3">
                                         <div class="form-group mb-lg-0">
-                                            <select class="form-control">
+                                            <select id="rentCity" class="form-control">
                                                 <option>Select Your City</option>
-                                                <option>Amsterdam</option>
-                                                <option>Barcelona</option>
-                                                <option>Beijing</option>
-                                                <option>Beirut</option>
-                                                <option>Bergen</option>
-                                                <option>Copenhagen</option>
-                                                <option>Doha</option>
+                                                <option value="lagos">Lagos</option>
+                                                <option value="abeokuta">Abeokuta</option>
+                                                <option value="akwa-ibom">Akwa-Ibom</option>
+                                                <option value="abuja">Abuja</option>
+                                                <option value="egbado">Egbado</option>
+                                                <option value="ilaro">Ilaro</option>
+                                                <option value="oke-ilewo">Oke-ilewo</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-lg-3">
                                         <div class="form-group mb-lg-0">
                                             
-                                            <select class="form-control">
-                                                <option>Choose Property Type</option>
-                                                <option>Residential Apartment</option>
-                                                <option>Independent/Builder Floor</option>
-                                                <option>Independent House/Villa</option>
-                                                <option>Residential Land</option>
-                                                <option>1 RK/ Studio Apartment</option>
-                                                <option>Farm House</option>
-                                                <option>Serviced Apartments</option>
+                                            <select id="rentPropType" class="form-control">
+                                                <option >Choose Property Type</option>
+                                                <option value="apartment">Apartment</option>
+                                                <option value="bungalow">Bungalow</option>
+                                                <option value="duplex">Duplex</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-md-3 col-lg-3">
                                         <div class="form-group mb-md-0">
                                             
-                                            <select class="form-control">
+                                            <select id="rentPriceRange" class="form-control">
                                                 <option>Choose Price Range</option>
-                                                <option>$0-1000</option>
-                                                <option>$1000-$2000</option>
-                                                <option>$2000-$3000</option>
-                                                <option>$3000-$4000</option>
-                                                <option>$4000-$5000</option>
+                                                <option>0-100000</option>
+                                                <option>100000-300000</option>
+                                                <option>300000-500000</option>
+                                                <option>500000-1000000</option>
+                                                <option>1000000-5000000</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="d-md-none d-lg-none col-12">
-                                      <input class="form-control mb-2" type="text" placeholder="Search Location" name="" id="">
+                                      <input id="rentInputSearch" class="form-control mb-2" type="text" placeholder="Search Location" name="" id="">
                                     </div>
                                     <div class="col-md-4 col-lg-3">
-                                        <button class="searchBtn">Search</button>
+                                        <button id="rentSearch" class="searchBtn">Search</button>
                                     </div>
                                 </div>
                             </div>
@@ -179,7 +206,7 @@
                                 <div class="row">
                                     <div class="col-md-3 col-lg-3">
                                         <div class="form-group mb-lg-0">
-                                            <select class="form-control">
+                                            <select id="buyCity" class="form-control">
                                                 <option>Select Your City</option>
                                                 <option>Amsterdam</option>
                                                 <option>Barcelona</option>
@@ -194,7 +221,7 @@
                                     <div class="col-md-3 col-lg-3">
                                         <div class="form-group mb-lg-0">
                                             
-                                            <select class="form-control">
+                                            <select id="buyPropType" class="form-control">
                                                 <option>Choose Property Type</option>
                                                 <option>Residential Apartment</option>
                                                 <option>Independent/Builder Floor</option>
@@ -208,7 +235,7 @@
                                     </div>
                                     <div class="col-md-3 col-lg-3">
                                         <div class="form-group mb-md-0">
-                                            <select class="form-control">
+                                            <select id="buyPriceRange" class="form-control">
                                                 <option>Choose Price Range</option>
                                                 <option>$0-1000</option>
                                                 <option>$1000-$2000</option>
@@ -219,10 +246,10 @@
                                         </div>
                                     </div>
                                     <div class="d-md-none d-lg-none col-12">
-                                      <input class="form-control mb-2" type="text" placeholder="Search Location" name="" id="">
+                                      <input id="buyInputSearch" class="form-control mb-2" type="text" placeholder="Search Location" name="" id="">
                                     </div>
                                     <div class="col-md-4 col-lg-3">
-                                        <button class="searchBtn">Search</button>
+                                        <button id="buySearch" class="searchBtn">Search</button>
                                     </div>
                                 </div>
                             </div>
@@ -236,7 +263,7 @@
                                 <div class="row">
                                     <div class="col-md-6 col-lg-3">
                                         <div class="form-group mb-lg-0">
-                                            <select class="form-control">
+                                            <select id="sellCity" class="form-control">
                                                 <option>Select Your City</option>
                                                 <option>Amsterdam</option>
                                                 <option>Barcelona</option>
@@ -251,7 +278,7 @@
                                     <div class="col-md-6 col-lg-3">
                                         <div class="form-group mb-lg-0">
                                             
-                                            <select class="form-control">
+                                            <select id="sellPropType" class="form-control">
                                                 <option>Choose Property Type</option>
                                                 <option>Residential Apartment</option>
                                                 <option>Independent/Builder Floor</option>
@@ -265,7 +292,7 @@
                                     </div>
                                     <div class="col-md-6 col-lg-3">
                                         <div class="form-group mb-md-0">
-                                            <select class="form-control">
+                                            <select id="sellPriceRange" class="form-control">
                                                 <option>Choose Price Range</option>
                                                 <option>$0-1000</option>
                                                 <option>$1000-$2000</option>
@@ -276,10 +303,10 @@
                                         </div>
                                     </div>
                                     <div class="d-md-none d-lg-none col-12">
-                                      <input class="form-control mb-2" type="text" placeholder="Search Location" name="" id="">
+                                      <input id="sellInputSearch" class="form-control mb-2" type="text" placeholder="Search Location" name="" id="">
                                     </div>
                                     <div class="col-12 col-md-4 col-lg-3">
-                                        <button class="searchBtn">Search</button>
+                                        <button id="sellSearch" class="searchBtn">Search</button>
                                     </div>
                                 </div>
                             </div>
@@ -537,7 +564,7 @@
               <circle class="ring-bg" r="30" cx="35" cy="35"></circle>
               <circle class="ring-progress" r="30" cx="35" cy="35"></circle>
             </svg>
-            <img src="" alt="User 1" class="user-img">
+            <img src="./assets/guy1.png" alt="User 1" class="user-img">
           </div>
 
           <!-- User 1 -->
@@ -546,7 +573,7 @@
               <circle class="ring-bg" r="30" cx="35" cy="35"></circle>
               <circle class="ring-progress" r="30" cx="35" cy="35"></circle>
             </svg>
-            <img src="" alt="User 2" class="user-img">
+            <img src="./assets/ladyPic.png" alt="User 2" class="user-img">
           </div>
 
           <!-- User 2 -->
@@ -679,26 +706,29 @@
         <div>
           <div class="detailsRow row justify-content-center align-items-center justify-content-lg-start gap-2">
             <!-- first -->
-            <div class="col-12 col-lg-3 col-md-3 d-flex justify-content-center align-items-center px-2">
-              <i class="fa-solid fa-location-dot me-2"></i>
+            <div class="col-12 col-lg-3 col-md-3 d-flex justify-content-center align-items-center gap-3 px-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+                <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/>
+              </svg>
               <div>
                 <small>Location</small>
                 <p id="postLocation"></p>
               </div>
             </div>
             <!-- second -->
-            <div class="col-12 col-lg-3 col-md-3 d-flex justify-content-center align-items-center px-2">
-              <i class="fa-solid fa-location-dot me-2"></i>
+            <div class="col-12 col-lg-3 col-md-3 d-flex justify-content-center align-items-center gap-3 px-2">
+              <img src="./assets/bed.png" alt="">
               <div>
-                <small>Property Type</small>
-                <p id="propertyCategory"></p>
+                <small>No of Bedroom</small>
+                <p id="propertyBedroom"></p>
               </div>
             </div>
             <!-- third -->
-            <div class="col-12 col-lg-3 col-md-3 d-flex justify-content-center align-items-center px-2">
+            <div class="col-12 col-lg-3 col-md-3 d-flex justify-content-center align-items-center gap-3 px-2">
+              <img src="./assets/Icon.png" alt="">
               <div>
-                <small>Price</small>
-                <p id="propertyPrice"></p>
+                <small>No of Bathroom</small>
+                <p id="propertyBathroom"></p>
               </div>
             </div>
             <!-- fourth -->
@@ -716,7 +746,7 @@
   </div>
 
   <!-- Application Modal -->
-<div id="applicationModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:999999999999;">
+<div id="applicationModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:99999999999999999999999;">
   <div style="background:#fff; padding:20px; border-radius:10px; width:90%; max-width:500px; position:relative;">
     <h4>Send Application</h4>
     <form id="applicationForm">

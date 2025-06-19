@@ -15,6 +15,205 @@
   border-radius: 50px;
   background-color: var(--primary-color);
 }
+/* loader styles */
+.loads{
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 111111111111111111111111111;
+  background-color: #000929;
+  overflow: hidden;
+}
+.boxes {
+  --size: 32px;
+  --duration: 800ms;
+  height: calc(var(--size) * 2);
+  width: calc(var(--size) * 3);
+  position: relative;
+  transform-style: preserve-3d;
+  transform-origin: 50% 50%;
+  margin-top: calc(var(--size) * 1.5 * -1);
+  transform: rotateX(60deg) rotateZ(45deg) rotateY(0deg) translateZ(0px);
+}
+
+.boxes .box {
+  width: var(--size);
+  height: var(--size);
+  top: 0;
+  left: 0;
+  position: absolute;
+  transform-style: preserve-3d;
+}
+
+.boxes .box:nth-child(1) {
+  transform: translate(100%, 0);
+  -webkit-animation: box1 var(--duration) linear infinite;
+  animation: box1 var(--duration) linear infinite;
+}
+
+.boxes .box:nth-child(2) {
+  transform: translate(0, 100%);
+  -webkit-animation: box2 var(--duration) linear infinite;
+  animation: box2 var(--duration) linear infinite;
+}
+
+.boxes .box:nth-child(3) {
+  transform: translate(100%, 100%);
+  -webkit-animation: box3 var(--duration) linear infinite;
+  animation: box3 var(--duration) linear infinite;
+}
+
+.boxes .box:nth-child(4) {
+  transform: translate(200%, 0);
+  -webkit-animation: box4 var(--duration) linear infinite;
+  animation: box4 var(--duration) linear infinite;
+}
+
+.boxes .box > div {
+  --background: #5C8DF6;
+  --top: auto;
+  --right: auto;
+  --bottom: auto;
+  --left: auto;
+  --translateZ: calc(var(--size) / 2);
+  --rotateY: 0deg;
+  --rotateX: 0deg;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: var(--background);
+  top: var(--top);
+  right: var(--right);
+  bottom: var(--bottom);
+  left: var(--left);
+  transform: rotateY(var(--rotateY)) rotateX(var(--rotateX)) translateZ(var(--translateZ));
+}
+
+.boxes .box > div:nth-child(1) {
+  --top: 0;
+  --left: 0;
+}
+
+.boxes .box > div:nth-child(2) {
+  --background: #145af2;
+  --right: 0;
+  --rotateY: 90deg;
+}
+
+.boxes .box > div:nth-child(3) {
+  --background: #447cf5;
+  --rotateX: -90deg;
+}
+
+.boxes .box > div:nth-child(4) {
+  --background: #DBE3F4;
+  --top: 0;
+  --left: 0;
+  --translateZ: calc(var(--size) * 3 * -1);
+}
+
+@-webkit-keyframes box1 {
+  0%, 50% {
+    transform: translate(100%, 0);
+  }
+
+  100% {
+    transform: translate(200%, 0);
+  }
+}
+
+@keyframes box1 {
+  0%, 50% {
+    transform: translate(100%, 0);
+  }
+
+  100% {
+    transform: translate(200%, 0);
+  }
+}
+
+@-webkit-keyframes box2 {
+  0% {
+    transform: translate(0, 100%);
+  }
+
+  50% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(100%, 0);
+  }
+}
+
+@keyframes box2 {
+  0% {
+    transform: translate(0, 100%);
+  }
+
+  50% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(100%, 0);
+  }
+}
+
+@-webkit-keyframes box3 {
+  0%, 50% {
+    transform: translate(100%, 100%);
+  }
+
+  100% {
+    transform: translate(0, 100%);
+  }
+}
+
+@keyframes box3 {
+  0%, 50% {
+    transform: translate(100%, 100%);
+  }
+
+  100% {
+    transform: translate(0, 100%);
+  }
+}
+
+@-webkit-keyframes box4 {
+  0% {
+    transform: translate(200%, 0);
+  }
+
+  50% {
+    transform: translate(200%, 100%);
+  }
+
+  100% {
+    transform: translate(100%, 100%);
+  }
+}
+
+@keyframes box4 {
+  0% {
+    transform: translate(200%, 0);
+  }
+
+  50% {
+    transform: translate(200%, 100%);
+  }
+
+  100% {
+    transform: translate(100%, 100%);
+  }
+}
+/* end of loader styles */
+
 .introjs-tooltip {
     background: #ffffff;
     color: #333;
@@ -85,7 +284,8 @@ body{
   background-color: rgba(255, 255, 255, 0.40);
   border-bottom: 1px solid #cecece;
   backdrop-filter: blur(5px);
-  z-index: 1000000;
+  z-index: 10000;
+  position: relative;
 }
 .nav-bar-div{
   width: 100%;
@@ -515,9 +715,23 @@ select.form-control {
   padding: 12px 25px;
   border-radius: 4px;
 }
+.seeBtn{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+#seeMoreBtn{
+  border: none;
+  color: white;
+  background-color: var(--primary-color);
+  padding: 12px 25px;
+  border-radius: 4px;
+}
 .riboon-container{
   position: absolute;
-  top: 40%;
+  top: 45%;
   left: -10px;
 }
 .ribbon-badge {
@@ -666,10 +880,10 @@ select.form-control {
 .stickyNav{
   background-color: rgba(255, 255, 255, 0.8);
   color: var(--paragraph-color) !important;
-  position: fixed;
+  position: fixed !important;
   top: 0;
   left: 0;
-  z-index: 1000000000000000000;
+  z-index: 10000;
   padding: 15px 5%;
   backdrop-filter: blur(3px);
   transition: all 0.3s ease-in-out;
@@ -797,7 +1011,10 @@ footer i{
   top: -30px;
   left: -30px;
 }
+.search-section{
+  width: 100%;
 
+}
 
 
 #mainPost{
@@ -897,33 +1114,42 @@ footer i{
   display: flex;
   justify-content: center;
   gap: 1.5rem;
+  margin-top: 2rem;
 }
 #testimonialText,
 #testimonialAuthor {
   color: var(--light-color); /* or your desired text color */
-  transition: opacity 0.3s;
+  font-size: 1.1rem;
+  transition: opacity 0.3s ease-in-out;
+  margin-bottom: 1rem;
 }
 .user-wrapper {
   position: relative;
   width: 70px;
   height: 70px;
+  cursor: pointer;
+  border-radius: 50%;
+  overflow: hidden;
 }
 
 .user-img {
-  width: 60px;
-  height: 60px;
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
   border-radius: 50%;
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  z-index: 1;
+  border: 2px solid transparent;
+  transition: transform 0.3s ease, border 0.3s ease;
 }
-
+.user-wrapper.active .user-img {
+  border: 2px solid #7065F0;
+  transform: scale(1.1);
+}
 /* SVG Ring Background */
 .ring-bg {
   fill: none;
   stroke: #e5e7eb; /* Tailwind gray-200 */
   stroke-width: 4;
+  
 }
 
 /* Animated Progress Ring */
@@ -1088,7 +1314,7 @@ footer i{
     font-size: 13px;
   }
 
-  .props{
+  /* .props{
     padding: 0px 8%;
   }
   .propsprice{
@@ -1130,7 +1356,7 @@ footer i{
 }
 .propsbuy:hover::before{
     width: 100%;
-}
+} */
 .indexDropdown div p:hover, 
 .indexDropdown div button:hover{
   background-color: var(--hero-bg) !important;
@@ -1147,7 +1373,7 @@ footer i{
   display: none;
   justify-content: center;
   align-items: center;
-  z-index: 9999999; /* lower than .popOut but high enough */
+  z-index: 9999999;
 }
 .modalOverlayShow{
   display: flex;
@@ -1156,10 +1382,10 @@ footer i{
   display: none;
 }
 .popOut {
-  position: fixed; /* Required for top/left to work properly */
+  position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%); /* Centers the modal */
+  transform: translate(-50%, -50%);
   background-color: white;
   width: 90vw;
   height: 90vh;
@@ -1199,6 +1425,10 @@ footer i{
 }
 .detailsRow{
   padding: 1% 2%;
+
+  p{
+    line-height: 10px;
+  }
 }
 .detailsRow > div{
   box-sizing: border-box;
@@ -1275,9 +1505,6 @@ footer i{
     overflow-y: hidden !important;
     overflow-x: hidden;
     padding: 2%;
-  }
-  .FormDiv{
-
   }
   .firstTop{
     height: 50%;

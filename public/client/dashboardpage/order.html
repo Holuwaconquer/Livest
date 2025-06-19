@@ -3,52 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Property Applications</title>
+  <title>PROPERTY APPLICATIONS</title>
   <style>
-    body {
-      background-color: #f5f7fa;
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 20px;
-    }
-
-    h1 {
-      text-align: center;
-      color: #333;
-      margin-bottom: 30px;
-    }
-
-    #applicationContainer {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-    }
-
-    .app-card {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      width: 100%;
-      max-width: 400px;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .app-card h2 {
-      margin: 0 0 10px;
-      font-size: 1.2em;
-      color: #2c3e50;
-    }
-
-    .app-card p {
-      margin: 4px 0;
-      color: #555;
-    }
-
     .status-badge {
       display: inline-block;
       padding: 6px 12px;
@@ -59,48 +15,15 @@
     }
 
     .status-approved {
-      background-color: #2ecc71;
+      background-color: #7065F0
     }
-
-    .button-group {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .button-group button {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      border-radius: 6px;
-      color: white;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-
-    .approveBtn {
-      background-color: #4CAF50;
-    }
-
-    .approveBtn:hover {
-      background-color: #45a049;
-    }
-
-    .deleteBtn {
-      background-color: #f44336;
-    }
-
-    .deleteBtn:hover {
-      background-color: #e53935;
-    }
-
     #paginationControls {
       text-align: center;
       margin-top: 20px;
     }
 
     .pagination-btn {
-      background-color: #3498db;
+      background-color: #7065F0;
       border: none;
       color: white;
       padding: 10px 16px;
@@ -112,12 +35,6 @@
     .pagination-btn:disabled {
       background-color: #ccc;
       cursor: default;
-    }
-
-    @media (max-width: 480px) {
-      .app-card {
-        width: 100%;
-      }
     }
   </style>
 </head>
@@ -135,9 +52,6 @@
 </script>
 
   <script type="module">
-    // import emailjs from 'https://cdn.jsdelivr.net/npm/emailjs-com@3.11.0/es/email.min.js';
-
-    // emailjs.init("EdXwc7mzPr-YwFFRV");
 
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
     import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
@@ -183,24 +97,27 @@
       pageData.forEach(({ userId, postId, appId, appData }) => {
         const date = appData.date ? new Date(appData.date).toLocaleString() : "Unknown date";
         const appCard = document.createElement("div");
-        appCard.className = "app-card";
+        appCard.style.borderBottom = '1px solid #7065F0'
+        appCard.className = "mb-3 py-2"
         appCard.innerHTML = `
-          <h2>Post: ${postId}</h2>
-          <p><strong>Name:</strong> ${appData.name || "N/A"}</p>
-          <p><strong>Phone:</strong> ${appData.phone || "N/A"}</p>
-          <p><strong>Email:</strong> ${appData.applicantEmail || "N/A"}</p>
-          <p><strong>Message:</strong> ${appData.message || "No message provided"}</p>
-          <p><strong>Date:</strong> ${date}</p>
-          <p><strong>Status:</strong> 
-            <span class="status-badge ${appData.status === "Approved" ? "status-approved" : ""}">
-              ${appData.status || "Pending"}
-            </span>
-          </p>
-          <div class="button-group">
-            <button class="approveBtn">Approve</button>
-            <button class="deleteBtn">Delete</button>
-          </div>
-        `;
+            <button style="border-radius: 30px; background-color: #DEDEF7; border: none; padding: 10px 25px; text-align: center" class="approveBtn">Approve</button>
+            <div class="d-flex justify-content-between align-items-center">
+                <h4>Post: ${postId}</h4>    
+                <p class="text-muted"><strong>Date:</strong> ${date}</p>
+            </div>
+            <p><strong>Name:</strong> ${appData.name || "N/A"}</p>
+                <p><strong>Message:</strong> ${appData.message || "No message provided"}</p>
+                <p><strong>Email:</strong> ${appData.applicantEmail || "N/A"}</p>
+                <p><strong>Phone:</strong> ${appData.phone || "N/A"}</p>
+                <p><strong>Status:</strong> 
+                    <span class="status-badge ${appData.status === "Approved" ? "status-approved" : ""}">
+                    ${appData.status || "Pending"}
+                    </span>
+                </p>
+                <div class="">
+                    <button style="border-radius: 30px; background-color: #f44336; border: none; padding: 10px 25px; text-align: center" class="deleteBtn">Delete</button>
+                </div>
+                `;
 
         appCard.querySelector(".approveBtn").addEventListener("click", () => {
             const appRef = ref(database, `applications/${userId}/${postId}/${appId}`);
